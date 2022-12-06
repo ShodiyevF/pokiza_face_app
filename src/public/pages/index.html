@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Id</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
+    <!-- links -->
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .a{
+            margin-right: 10px;
+        }
+        
+        .b{
+            margin-right: 10px;
+        }
+        
+        .wrapper{
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .test{
+            display: none;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="wrapper">
+        <input class="a" type="text" placeholder="login">
+        <input class="b" type="text" placeholder="password">
+        <button class="ads">OK</button>
+    </div>
+    <div class="container test">
+        <div class="wrapper">
+            <input class="input text" type="text" placeholder="F.I.SH">
+            <!-- <form id="imgform" class="test"> -->
+                <input id="fileinput" class="input file" type="file" name="test" placeholder="Rasm yuklash">
+                <button type="submit" class="button">Saqlash</button>
+                <!-- </form> -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="main.js"></script>
+    <script>
+        const a = document.querySelector('.a')
+        const b = document.querySelector('.b')
+        const button = document.querySelector('.ads')
+        const content = document.querySelector('.container')
+
+        button.onclick = (e) => {
+            if(a.value == 'test' || b.value == 'test'){
+                content.classList.remove('test')
+                document.querySelector('.wrapper').classList.add('test')
+            }
+        }
+    </script>
+</body>
+</html>
