@@ -21,7 +21,8 @@
         .alert {
             position: absolute;
             order: 22;
-            top: 40px;
+            top: 10%;
+            left: 39%;
             padding: 10px 20px;
             background-color: red;
             color: white;
@@ -49,6 +50,7 @@
         .alert-text{
             display: flex;
             color: black;
+            font-size: 22px;
         }
         .closebtn:hover {
             color: black;
@@ -56,14 +58,41 @@
         .display_none{
             display: none;
         }
+        .a{
+            margin-right: 10px;
+        }
+
+        .b{
+            margin-right: 10px;
+        }
+        
+        .wrapper{
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .test{
+            display: none;
+        }
+        .asd{
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
-    <div class="alert display-none">
-        <p class="alert-text">Bugungi ish kuni yakunlangan ❌</p>
+    <div class="wrapper">
+        <input class="a" type="text" placeholder="login">
+        <input class="b" type="text" placeholder="password">
+        <button class="ads">OK</button>
     </div>
-    <video id="videoInput" width="720" height="550" muted controls>
-        <script defer async src="./js/face-api.min.js"></script>
-        <script defer async src="./js/script.js"></script>
-    </body>
+    <div class="asd test">
+        <div class="alert display_none">
+            <p class="alert-text">Bugungi ish kuni yakunlangan ❌</p>
+        </div>
+        <video id="videoInput" width="100%" height="99%" muted controls>
+            <script defer async src="./js/script.js"></script>
+        </body>
+    </div>
     </html>

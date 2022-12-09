@@ -1,4 +1,8 @@
+const https = require('https')
+const http = require('http')
+
 const express = require('express')
+const fs = require('fs')
 const path = require('path')
 const multer = require('multer');
 
@@ -7,6 +11,17 @@ const { daysInCurrentMonth } = require('./lib/getday');
 const { calculateTime, timeConvert } = require('./lib/calctime');
 
 const app = express()
+let httpServer = http.createServer(app)
+
+// process.env.NODE_ENV = 'production';
+// console.log(process.env.NODE_ENV);
+if (process.env.NODE_ENV === 'production') {
+    httpServer = https.createServer({
+        cert: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/cert.pem', 'UTF-8'),
+        key: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/privkey.pem', 'UTF-8'),
+        ca: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/fullchain.pem', 'UTF-8')
+    }, app)
+}
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -120,6 +135,7 @@ app.post('/worker/post/time', async (req, res) => {
         const checktime = await uniqRow(`select * from settime where worker_id = $1 and to_char(settime.time_date, 'YYYY-MM-DD') = $2`, req.body.id, resultdate)
         if (checktime.rows.length) {
             const asd = checktime.rows.find(el => el.time_check.length > 0)
+            
             if((gethours - asd.time_check) <= 15){
                 res.json({
                     status: 400,
@@ -184,7 +200,7 @@ app.post('/excelexport', async (req, res) => {
                 }
             }
         }
-
+        
         var Excel = require('exceljs');
         var workbook = new Excel.Workbook();
         const workbooka = new Excel.stream.xlsx.WorkbookWriter({
@@ -227,7 +243,18 @@ app.post('/excelexport', async (req, res) => {
         let month = months[new Date().getMonth()];
         
         // const finished = workers.filter(el => el.time_date.toString().includes(`${month[0]}${month[1]}${month[2]}`))
-        
+        function getAllDaysInMonth(year, month) {
+            const date = new Date(year, month, 1);
+            
+            const dates = [];
+            
+            while (date.getMonth() === month) {
+                dates.push(date.getDate());
+                date.setDate(date.getDate() + 1);
+            }
+            
+            return dates;
+        }
         const a = []
         for (const i of workers) {
             const workertimes = await uniqRow('select * from settime where worker_id = $1', i.worker_id)
@@ -237,18 +264,38 @@ app.post('/excelexport', async (req, res) => {
                 fio: i.worker_fish,
             }
             let count = 0
+            let fullresult = 0
             for (const i of getMonth) {
+                const asd = i.time_date.toString().split(' ')[2]
+                const now = new Date();
+                const fasd = getAllDaysInMonth(now.getFullYear(), now.getMonth())
                 count += 1
                 worker[`income${count}`] = i.time_get;
                 worker[`care${count}`] = (isNaN(i.time_end) ? i.time_end : '');
-                worker[`time${count}`] = i.time_end ? calculateTime(i.time_get, i.time_end) : '0';
+                const time = i.time_end ? calculateTime(i.time_get, i.time_end) : '0'
+                worker[`time${count}`] = time;
+                const fulltime = await (time != '0' ? +(time.split(':')[0] * 60) + +(time.split(':')[1]) : 'none')
+                await (fulltime != 'none' ? fullresult += fulltime : fullresult)
+                
             }
-
-            const gethours = (new Date().getHours() * 60) + (new Date().getMinutes())
-            worker[`allresult`] = timeConvert(gethours);
+            // const now = new Date();
+            // const fasd = getAllDaysInMonth(now.getFullYear(), now.getMonth())
+            // for (let i = 0, j = 0; i < fasd.length; i++, j++) {
+            //     // console.log(getMonth[i]);
+            //     const asd = (getMonth[i].time_date.toString().split(' ')[2][0] == '0' ? getMonth[i].time_date.toString().split(' ')[2][1] : getMonth[i].time_date.toString().split(' ')[2])
+            //     // console.log(asd);
+            //     // console.log(fasd[j]);
+            //     if (fasd[j] == asd) {
+            //         console.log('asd')
+            //     } else {
+            //         console.log('avasd');
+            //     }
+            // }
+            console.log(worker);
+            worker[`allresult`] = timeConvert(fullresult);
             a.push(worker)
         }
-
+        
         for (const i of a) {
             sheet.addRow(i)   
         }
@@ -264,4 +311,5 @@ app.get('/xisobot', (req, res)=>{
     res.sendFile(path.join(__dirname, '../', 'Xisobot.xls'))
 })
 
-app.listen(4000, console.log(4000))
+// app.listen(443, console.log(443))
+httpServer.listen(443, console.log(443))

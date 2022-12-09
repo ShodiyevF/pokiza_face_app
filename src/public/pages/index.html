@@ -64,7 +64,7 @@
         const content = document.querySelector('.container')
 
         button.onclick = (e) => {
-            if(a.value == 'test' || b.value == 'test'){
+            if(a.value == 'test' && b.value == 'test'){
                 content.classList.remove('test')
                 document.querySelector('.wrapper').classList.add('test')
             }
