@@ -29,7 +29,7 @@
         .a{
             margin-right: 10px;
         }
-
+        
         .b{
             margin-right: 10px;
         }
@@ -43,16 +43,52 @@
         .test{
             display: none;
         }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 10%; /* Could be more or less, depending on screen size */
+        }
+        
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-
-    <div class="wrapper">
+    
+    <!-- <div class="wrapper">
         <input class="a" type="text" placeholder="login">
         <input class="b" type="text" placeholder="password">
         <button class="ads">OK</button>
-    </div>
-    <div class="container test">
+    </div> -->
+    <div class="container ">
         <div style="margin-top: 20px; display: flex;">
             <input class="from" type="text" style="width: 200px; margin-right: 20px;" placeholder="qachondan misol: 01-12-2022">
             <input class="to" type="text" style="width: 230px; margin-right: 20px;" placeholder="qachongacha misol: 04-12-2022">
@@ -66,225 +102,300 @@
             <h2 class="header-title">Id</h2>
             <h2 class="header-title">F.I.Sh</h2>
             <h2 class="header-title">Sana</h2>
+            <h2 class="header-title">Rasm</h2>
         </div> 
         <div class="nav-wrapper">    
             <ul class="nav one">
             </ul>
             <ul class="nav two">
             </ul>
-            
             <ul class="nav three">
             </ul>
+            <!-- <ul class="nav four">
+                <li>
+                </li>
+                <li>
+                    <button id="myBtn">Open Modal</button>
+                </li>
+                <li>
+                    <button id="myBtn">Open Modal</button>
+                </li>
+                <li>
+                    <button id="myBtn">Open Modal</button>
+                </li>
+                <li>
+                    <button id="myBtn">Open Modal</button>
+                </li>
+                <li>
+                    <button id="myBtn">Open Modal</button>
+                </li>
+                
+            </ul> -->
         </div>
+    </div>
+    
+    
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img class="userimg" src="http://localhost:443/img/" width="100">
+        </div>
+        
     </div>
     
     <script>
         
-        const ada = document.querySelector('.a')
-        const b = document.querySelector('.b')
-        const button = document.querySelector('.ads')
-        const content = document.querySelector('.container')
+        var modal = document.getElementById("myModal");
         
-        button.onclick = (e) => {
-            if(ada.value == 'test' && b.value == 'test'){
-                content.classList.remove('test')
-                document.querySelector('.wrapper').classList.add('test')
-            }
-        }
-
-        const btn = document.querySelector('.button')
-        const exportb = document.querySelector('.export')
-        const buttona = document.querySelector('.all')
-        const input1 = document.querySelector('.from')
-        const input2 = document.querySelector('.to')
-        const a = document.querySelector('.one')
+        // Get the button that opens the modal
         
-        
-        function namesa (i){
-            i.ondblclick = (e) => {
-                e.target.classList[0] ? e.target.classList.remove('bg') : e.target.classList.add('bg')
-                if (e.target.dataset.active == 0) {
-                    e.target.dataset.active = 1
-                } else {
-                    e.target.dataset.active = 0
+        // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+            
+            // When the user clicks on the button, open the modal
+            
+            
+            // When the user clicks on <span> (x), close the modal
+                span.onclick = function() {
+                    modal.style.display = "none";
                 }
-            }
-        }
-        
-        let aa = true
-        
-        function allcheck (e){
-            buttona.onclick = (a) => {
-                for (const i of e) {
-                    if(aa) {
-                        i.dataset.active = 0
-                        i.classList.remove('bg')
-                        aa = false
-                    }
-                    i.classList[0] ? i.classList.remove('bg') : i.classList.add('bg')
-                    if (i.dataset.active == 0) {
-                        i.dataset.active = 1
-                    } else {
-                        i.dataset.active = 0
+                
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function(event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
                     }
                 }
-            }
-        }
-        
-        btn.onclick = async (e) => {
-            if(input1.value && input2.value){
-                const res = await fetch('/workerallfilter', {
-                    method: "POST",
-                    headers: {
-                        'Content-type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        from: input1.value,
-                        to: input2.value
-                    })
-                })
                 
-                const data = await res.json()
+                // const ada = document.querySelector('.a')
+                // const b = document.querySelector('.b')
+                // const button = document.querySelector('.ads')
+                // const content = document.querySelector('.container')
                 
-                if(data.all.length){
-                    document.querySelector('.one').innerHTML = ''
-                    document.querySelector('.two').innerHTML = ''
-                    document.querySelector('.three').innerHTML = ''
-                    for (const i of data.all) {
-                        const liid = document.createElement('li')
-                        const liname = document.createElement('li')
-                        const lidate = document.createElement('li')
+                // button.onclick = (e) => {
+                    //     if(ada.value == 'test' && b.value == 'test'){
+                        //         content.classList.remove('test')
+                        //         document.querySelector('.wrapper').classList.add('test')
+                        //     }
+                        // }
                         
-                        const spanid = document.createElement('span')
-                        const spanname = document.createElement('span')
-                        spanname.dataset.id = i.worker_id
-                        spanname.dataset.active = 0
-                        const spandate = document.createElement('span')
+                        const btn = document.querySelector('.button')
+                        const exportb = document.querySelector('.export')
+                        const buttona = document.querySelector('.all')
+                        const input1 = document.querySelector('.from')
+                        const input2 = document.querySelector('.to')
+                        const a = document.querySelector('.one')
                         
-                        spanid.textContent = i.worker_id
-                        spanname.textContent = i.worker_fish
-                        spandate.textContent = i.worker_getdate.split('T')[0]
                         
-                        liid.appendChild(spanid)
-                        liname.appendChild(spanname)
-                        lidate.appendChild(spandate)
+                        function namesa (i){
+                            i.ondblclick = (e) => {
+                                e.target.classList[0] ? e.target.classList.remove('bg') : e.target.classList.add('bg')
+                                if (e.target.dataset.active == 0) {
+                                    e.target.dataset.active = 1
+                                } else {
+                                    e.target.dataset.active = 0
+                                }
+                            }
+                        }
                         
-                        document.querySelector('.one').appendChild(liid)
-                        document.querySelector('.two').appendChild(liname)
-                        document.querySelector('.three').appendChild(lidate)
-                    }
-                    const names = document.querySelectorAll('[data-active]')
-                    
-                    allcheck(names)
-                    for (const i of names) {
-                        namesa(i)
-                    }
-                }
-            } else {
-                document.querySelector('.one').innerHTML = ''
-                document.querySelector('.two').innerHTML = ''
-                document.querySelector('.three').innerHTML = '';
-                (async () => {
-                    const res = await fetch('/workerall')
-                    const data = await res.json()
-                    for (const i of data.all) {
-                        const liid = document.createElement('li')
-                        const liname = document.createElement('li')
-                        const lidate = document.createElement('li')
+                        let aa = true
                         
-                        const spanid = document.createElement('span')
-                        const spanname = document.createElement('span')
-                        spanname.dataset.id = i.worker_id
-                        spanname.dataset.active = 0
-                        const spandate = document.createElement('span')
+                        function allcheck (e){
+                            buttona.onclick = (a) => {
+                                for (const i of e) {
+                                    if(aa) {
+                                        i.dataset.active = 0
+                                        i.classList.remove('bg')
+                                        aa = false
+                                    }
+                                    i.classList[0] ? i.classList.remove('bg') : i.classList.add('bg')
+                                    if (i.dataset.active == 0) {
+                                        i.dataset.active = 1
+                                    } else {
+                                        i.dataset.active = 0
+                                    }
+                                }
+                            }
+                        }
                         
-                        spanid.textContent = i.worker_id
-                        spanname.textContent = i.worker_fish
-                        spandate.textContent = i.worker_getdate.split('T')[0]
+                        btn.onclick = async (e) => {
+                            if(input1.value && input2.value){
+                                const res = await fetch('/workerallfilter', {
+                                    method: "POST",
+                                    headers: {
+                                        'Content-type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        from: input1.value,
+                                        to: input2.value
+                                    })
+                                })
+                                
+                                const data = await res.json()
+                                
+                                if(data.all.length){
+                                    document.querySelector('.one').innerHTML = ''
+                                    document.querySelector('.two').innerHTML = ''
+                                    document.querySelector('.three').innerHTML = ''
+                                    for (const i of data.all) {
+                                        const liid = document.createElement('li')
+                                        const liname = document.createElement('li')
+                                        const lidate = document.createElement('li')
+                                        
+                                        const spanid = document.createElement('span')
+                                        spanid.id = 'myBtn'
+                                        spanid.dataset.id = i.worker_id
+                                        const spanname = document.createElement('span')
+                                        spanname.dataset.id = i.worker_id
+                                        spanname.dataset.active = 0
+                                        const spandate = document.createElement('span')
+                                        
+                                        spanid.textContent = i.worker_id
+                                        spanname.textContent = i.worker_fish
+                                        spandate.textContent = i.worker_getdate.split('T')[0]
+                                        
+                                        liid.appendChild(spanid)
+                                        liname.appendChild(spanname)
+                                        lidate.appendChild(spandate)
+                                        
+                                        document.querySelector('.one').appendChild(liid)
+                                        document.querySelector('.two').appendChild(liname)
+                                        document.querySelector('.three').appendChild(lidate)
+                                    }
+                                    const names = document.querySelectorAll('[data-active]')
+                                    
+                                    allcheck(names)
+                                    for (const i of names) {
+                                        namesa(i)
+                                    }
+                                }
+                            } else {
+                                document.querySelector('.one').innerHTML = ''
+                                document.querySelector('.two').innerHTML = ''
+                                document.querySelector('.three').innerHTML = '';
+                                (async () => {
+                                    const res = await fetch('/workerall')
+                                    const data = await res.json()
+                                    for (const i of data.all) {
+                                        const liid = document.createElement('li')
+                                        const liname = document.createElement('li')
+                                        const lidate = document.createElement('li')
+                                        
+                                        const spanid = document.createElement('span')
+                                        spanid.id = 'myBtn'
+                                        spanid.dataset.id = i.worker_id
+                                        const spanname = document.createElement('span')
+                                        spanname.dataset.id = i.worker_id
+                                        spanname.dataset.active = 0
+                                        const spandate = document.createElement('span')
+                                        
+                                        spanid.textContent = i.worker_id
+                                        spanname.textContent = i.worker_fish
+                                        spandate.textContent = i.worker_getdate.split('T')[0]
+                                        
+                                        liid.appendChild(spanid)
+                                        liname.appendChild(spanname)
+                                        lidate.appendChild(spandate)
+                                        
+                                        document.querySelector('.one').appendChild(liid)
+                                        document.querySelector('.two').appendChild(liname)
+                                        document.querySelector('.three').appendChild(lidate)
+                                    }
+                                    const names = document.querySelectorAll('[data-active]')
+                                    
+                                    allcheck(names)
+                                    for (const i of names) {
+                                        namesa(i)
+                                    }
+                                })()
+                            }
+                        }
                         
-                        liid.appendChild(spanid)
-                        liname.appendChild(spanname)
-                        lidate.appendChild(spandate)
+                        (async () => {
+                            const res = await fetch('/workerall')
+                            const data = await res.json()
+                            for (const i of data.all) {
+                                const liid = document.createElement('li')
+                                const liname = document.createElement('li')
+                                const lidate = document.createElement('li')
+                                
+                                const spanid = document.createElement('span')
+                                spanid.id = 'myBtn'
+                                spanid.dataset.id = i.worker_id
+                                const spanname = document.createElement('span')
+                                spanname.dataset.id = i.worker_id
+                                spanname.dataset.active = 0
+                                const spandate = document.createElement('span')
+                                
+                                spanid.textContent = i.worker_id
+                                spanname.textContent = i.worker_fish
+                                spandate.textContent = i.worker_getdate.split('T')[0]
+                                
+                                liid.appendChild(spanid)
+                                liname.appendChild(spanname)
+                                lidate.appendChild(spandate)
+                                
+                                document.querySelector('.one').appendChild(liid)
+                                document.querySelector('.two').appendChild(liname)
+                                document.querySelector('.three').appendChild(lidate)
+                            }
+                            const names = document.querySelectorAll('[data-active]')
+                            
+                            allcheck(names)
+                            for (const i of names) {
+                                namesa(i)
+                            }
+                            var btna = document.querySelectorAll("#myBtn");
+                            const imgad = document.querySelector('.userimg')
+                            for (const i of btna) {
+                                i.onclick = async function(e) {
+                                    console.log(e.target.dataset);
+                                    modal.style.display = "block";
+                                    // log
+                                    const res = await fetch(`/img/${e.target.dataset.id}`)
+                                    const data = await res.blob()
+                                    const imageBase64 = URL.createObjectURL(data)
+                                    console.log({imageBase64});
+                                    imgad.src = imageBase64
+                                    console.log(imgad.src);
+                                }
+                            }
+                        })()
                         
-                        document.querySelector('.one').appendChild(liid)
-                        document.querySelector('.two').appendChild(liname)
-                        document.querySelector('.three').appendChild(lidate)
-                    }
-                    const names = document.querySelectorAll('[data-active]')
-                    
-                    allcheck(names)
-                    for (const i of names) {
-                        namesa(i)
-                    }
-                })()
-            }
-        }
-        
-        (async () => {
-            const res = await fetch('/workerall')
-            const data = await res.json()
-            for (const i of data.all) {
-                const liid = document.createElement('li')
-                const liname = document.createElement('li')
-                const lidate = document.createElement('li')
-                
-                const spanid = document.createElement('span')
-                const spanname = document.createElement('span')
-                spanname.dataset.id = i.worker_id
-                spanname.dataset.active = 0
-                const spandate = document.createElement('span')
-                
-                spanid.textContent = i.worker_id
-                spanname.textContent = i.worker_fish
-                spandate.textContent = i.worker_getdate.split('T')[0]
-                
-                liid.appendChild(spanid)
-                liname.appendChild(spanname)
-                lidate.appendChild(spandate)
-                
-                document.querySelector('.one').appendChild(liid)
-                document.querySelector('.two').appendChild(liname)
-                document.querySelector('.three').appendChild(lidate)
-            }
-            const names = document.querySelectorAll('[data-active]')
-            
-            allcheck(names)
-            for (const i of names) {
-                namesa(i)
-            }
-        })()
-        
-        exportb.ondblclick = async (e) => {
-            const ids = []
-            
-            const idsa = document.querySelectorAll('[data-active]');
-            for (const i of idsa) {
-                ids.push({
-                    id: i.dataset.id,
-                    active: i.dataset.active
-                })
-            }
-            const results = ids.filter(el => el.active == 1)
-            const res = await fetch('/excelexport', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: results
-                })
-            })
-            alert('3 sekund kuting')
-            setTimeout(() => {
-                const a = document.createElement('a')
-                a.setAttribute('href', '/xisobot')
-                // a.setAttribute('target', '_blank')
-                a.setAttribute('download', 'xisobot.xls')
-                a.click()
-            }, 3000)
-            
-        }
-        
-    </script>
-</body>
-</html>
+                        exportb.ondblclick = async (e) => {
+                            const ids = []
+                            
+                            const idsa = document.querySelectorAll('[data-active]');
+                            for (const i of idsa) {
+                                ids.push({
+                                    id: i.dataset.id,
+                                    active: i.dataset.active
+                                })
+                            }
+                            const results = ids.filter(el => el.active == 1)
+                            const res = await fetch('/excelexport', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: results
+                                })
+                            })
+                            alert('3 sekund kuting')
+                            setTimeout(() => {
+                                const a = document.createElement('a')
+                                a.setAttribute('href', '/xisobot')
+                                // a.setAttribute('target', '_blank')
+                                a.setAttribute('download', 'xisobot.xls')
+                                a.click()
+                            }, 3000)
+                            
+                        }
+                        
+                    </script>
+                </body>
+                </html>

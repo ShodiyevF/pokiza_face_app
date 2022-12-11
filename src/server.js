@@ -133,6 +133,7 @@ app.post('/worker/post/time', async (req, res) => {
         const hours = new Date().getHours() + ':' + new Date().getMinutes()
         const resultdate = `${year}-${mounth == 12 ? mounth : mounth + 1 }-${today.toString().length == 1 ? '0'+today : today}`
         const checktime = await uniqRow(`select * from settime where worker_id = $1 and to_char(settime.time_date, 'YYYY-MM-DD') = $2`, req.body.id, resultdate)
+        console.log(checktime.rows);
         if (checktime.rows.length) {
             const asd = checktime.rows.find(el => el.time_check.length > 0)
             
@@ -305,6 +306,10 @@ app.post('/excelexport', async (req, res) => {
     } catch (error) {
         console.log(error.message, '/excelexport');
     }
+})
+
+app.get('/img/:id', (req, res)=>{
+    res.sendFile(path.join(__dirname, '../', '../', 'face_images/', `${req.params.id}.jpg`))
 })
 
 app.get('/xisobot', (req, res)=>{
