@@ -14,7 +14,7 @@ const app = express()
 let httpServer = http.createServer(app)
 
 // process.env.NODE_ENV = 'production';
-// console.log(process.env.NODE_ENV);
+console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'production') {
     httpServer = https.createServer({
         cert: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/cert.pem', 'UTF-8'),
@@ -28,8 +28,18 @@ const storage = multer.diskStorage({
         cb(null, path.join(__dirname, '../', '../', 'face_images/'))
     },
     filename: async function(req, file, cb) {
-        const last = await uniqRow('select * from workers order by worker_id desc limit 1')
-        cb(null, (last.rows.length ? last.rows[0].worker_id : 1) + ".jpg")
+        console.log(req.params);
+        const findedFile = fs.existsSync(path.join(__dirname, '../', '../', 'face_images/', req.params.id + '.jpg'))
+        if (req.params.id) {
+            console.log(findedFile);
+            if(findedFile){
+                cb(null, req.params.id + ".jpg")
+            }
+        } else {
+            console.log('asd');
+            const last = await uniqRow('select * from workers order by worker_id desc limit 1')
+            cb(null, (last.rows.length ? last.rows[0].worker_id : 1) + ".jpg")
+        }
     }
 })
 const upload = multer({ storage: storage });
@@ -82,6 +92,8 @@ app.post('/worker/post', async (req, res) => {
 })
 
 app.post('/worker/post/img', upload.single('test'), (req, res) => {})
+app.put('/worker/put/img/:id', upload.single('testa'), (req, res) => {
+})
 
 app.get('/workerall', async (req, res) => {
     try {

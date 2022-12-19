@@ -24,9 +24,10 @@
             top: 10%;
             left: 39%;
             padding: 10px 20px;
-            background-color: red;
+            /* background-color: red; */
             color: white;
             margin-bottom: 20px;
+            border: 3px solid red;
         }
         .alert-ok {
             border: 3px solid #23E200;
@@ -61,7 +62,7 @@
         .a{
             margin-right: 10px;
         }
-
+        
         .b{
             margin-right: 10px;
         }
@@ -72,28 +73,68 @@
             align-items: center;
             justify-content: center;
         }
-        .test{
+        .test.test.test{
             display: none;
         }
         .asd{
+            display: block;
+            position: relative;
             width: 100%;
             height: 100%;
+            /* display: flex;
+            flex-direction: column; */
+        }
+        .video{
+            margin-left: 200px;
+        }
+        .hidden:not(:focus):not(:active) {
+            clip: rect(0 0 0 0); 
+            clip-path: inset(50%);
+            height: 1px;
+            overflow: hidden;
+            position: absolute;
+            white-space: nowrap; 
+            width: 1px;
+        }
+        #snap{
+            position: absolute;
+            display: block;
+            top: 80%;
+            left: 48%;
+            margin-left: auto;
+            margin-right: auto;
+            z-index: 11;
         }
     </style>
 </head>
 <body>
-    <!-- <div class="wrapper">
+    <div class="wrapper display_none">
         <input class="a" type="text" placeholder="login">
         <input class="b" type="text" placeholder="password">
         <button class="ads">OK</button>
-    </div> -->
+    </div>
     <div class="asd">
-        <div class="alert display_none">
+        <div class="alert test">
             <p class="alert-text">Bugungi ish kuni yakunlangan ❌</p>
         </div>
-        <video id="videoInput" width="100%" height="99%" muted controls>
-            <script defer async src="./js/test.js"></script>
-            <!-- <script defer async src="./js/script.js"></script> -->
-        </body>
+        
+        <video id="video" width="640" height="480" autoplay></video>
+        <!-- <video id="videoInput" width="100%" height="99%" muted controls></video> -->
+        <button style="margin-left: auto; margin-right: auto" id="snap">BOSING</button>
+        <canvas class="hidden" id="canvas" width="640" height="480"></canvas>
+        <img class="asdf hidden" src="a" alt="">
     </div>
-    </html>
+        <script type="module" src="./js/btnli.js"></script>
+        <script>    
+            var video = document.getElementById('video');
+            
+            if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                    video.srcObject = stream;
+                    video.play();
+                });
+            }
+        </script>
+    </body>
+</div>
+</html>

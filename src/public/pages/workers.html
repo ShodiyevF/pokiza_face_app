@@ -83,11 +83,11 @@
 </head>
 <body>
     
-    <!-- <div class="wrapper">
+    <div class="wrapper">
         <input class="a" type="text" placeholder="login">
         <input class="b" type="text" placeholder="password">
         <button class="ads">OK</button>
-    </div> -->
+    </div>
     <div class="container ">
         <div style="margin-top: 20px; display: flex;">
             <input class="from" type="text" style="width: 200px; margin-right: 20px;" placeholder="qachondan misol: 01-12-2022">
@@ -98,11 +98,11 @@
             
             <button class="export" style="margin-left: auto;">EXCEL ga export qilish</button>
         </div>
+        <input class="asd" type="file" name="testa">
         <div class="header-wrapper">
             <h2 class="header-title">Id</h2>
             <h2 class="header-title">F.I.Sh</h2>
-            <h2 class="header-title">Sana</h2>
-            <h2 class="header-title">Rasm</h2>
+            <h2 class="header-title header-title_sana">Sana</h2>
         </div> 
         <div class="nav-wrapper">    
             <ul class="nav one">
@@ -141,12 +141,27 @@
         <!-- Modal content -->
         <div class="modal-content">
             <span class="close">&times;</span>
-            <img class="userimg" src="http://localhost:443/img/" width="100">
+            <img class="userimg" src="https://abubakr/img/" width="100">
         </div>
         
     </div>
     
     <script>
+        
+        const das = document.querySelector('.header-title_sana')
+        das.onclick = async (e) => {
+            const filea = document.querySelector('.asd')
+            const formData = new FormData();
+            formData.append("testa", filea.files[0]);
+            filea.value = ''
+            
+            const res = await fetch('/worker/put/img/9',{
+                method: 'PUT',
+                body: formData
+            })
+            const data = await res.json()
+            
+        }
         
         var modal = document.getElementById("myModal");
         
@@ -170,150 +185,112 @@
                     }
                 }
                 
-                // const ada = document.querySelector('.a')
-                // const b = document.querySelector('.b')
-                // const button = document.querySelector('.ads')
-                // const content = document.querySelector('.container')
+                const ada = document.querySelector('.a')
+                const b = document.querySelector('.b')
+                const button = document.querySelector('.ads')
+                const content = document.querySelector('.container')
                 
-                // button.onclick = (e) => {
-                    //     if(ada.value == 'test' && b.value == 'test'){
-                        //         content.classList.remove('test')
-                        //         document.querySelector('.wrapper').classList.add('test')
-                        //     }
-                        // }
-                        
-                        const btn = document.querySelector('.button')
-                        const exportb = document.querySelector('.export')
-                        const buttona = document.querySelector('.all')
-                        const input1 = document.querySelector('.from')
-                        const input2 = document.querySelector('.to')
-                        const a = document.querySelector('.one')
-                        
-                        
-                        function namesa (i){
-                            i.ondblclick = (e) => {
-                                e.target.classList[0] ? e.target.classList.remove('bg') : e.target.classList.add('bg')
-                                if (e.target.dataset.active == 0) {
-                                    e.target.dataset.active = 1
-                                } else {
-                                    e.target.dataset.active = 0
-                                }
-                            }
+                button.onclick = (e) => {
+                    if(ada.value == 'test' && b.value == 'test'){
+                        content.classList.remove('test')
+                        document.querySelector('.wrapper').classList.add('test')
+                    }
+                }
+                
+                const btn = document.querySelector('.button')
+                const exportb = document.querySelector('.export')
+                const buttona = document.querySelector('.all')
+                const input1 = document.querySelector('.from')
+                const input2 = document.querySelector('.to')
+                const a = document.querySelector('.one')
+                
+                
+                function namesa (i){
+                    i.ondblclick = (e) => {
+                        e.target.classList[0] ? e.target.classList.remove('bg') : e.target.classList.add('bg')
+                        if (e.target.dataset.active == 0) {
+                            e.target.dataset.active = 1
+                        } else {
+                            e.target.dataset.active = 0
                         }
-                        
-                        let aa = true
-                        
-                        function allcheck (e){
-                            buttona.onclick = (a) => {
-                                for (const i of e) {
-                                    if(aa) {
-                                        i.dataset.active = 0
-                                        i.classList.remove('bg')
-                                        aa = false
-                                    }
-                                    i.classList[0] ? i.classList.remove('bg') : i.classList.add('bg')
-                                    if (i.dataset.active == 0) {
-                                        i.dataset.active = 1
-                                    } else {
-                                        i.dataset.active = 0
-                                    }
-                                }
+                    }
+                }
+                
+                let aa = true
+                
+                function allcheck (e){
+                    buttona.onclick = (a) => {
+                        for (const i of e) {
+                            if(aa) {
+                                i.dataset.active = 0
+                                i.classList.remove('bg')
+                                aa = false
                             }
-                        }
-                        
-                        btn.onclick = async (e) => {
-                            if(input1.value && input2.value){
-                                const res = await fetch('/workerallfilter', {
-                                    method: "POST",
-                                    headers: {
-                                        'Content-type': 'application/json'
-                                    },
-                                    body: JSON.stringify({
-                                        from: input1.value,
-                                        to: input2.value
-                                    })
-                                })
-                                
-                                const data = await res.json()
-                                
-                                if(data.all.length){
-                                    document.querySelector('.one').innerHTML = ''
-                                    document.querySelector('.two').innerHTML = ''
-                                    document.querySelector('.three').innerHTML = ''
-                                    for (const i of data.all) {
-                                        const liid = document.createElement('li')
-                                        const liname = document.createElement('li')
-                                        const lidate = document.createElement('li')
-                                        
-                                        const spanid = document.createElement('span')
-                                        spanid.id = 'myBtn'
-                                        spanid.dataset.id = i.worker_id
-                                        const spanname = document.createElement('span')
-                                        spanname.dataset.id = i.worker_id
-                                        spanname.dataset.active = 0
-                                        const spandate = document.createElement('span')
-                                        
-                                        spanid.textContent = i.worker_id
-                                        spanname.textContent = i.worker_fish
-                                        spandate.textContent = i.worker_getdate.split('T')[0]
-                                        
-                                        liid.appendChild(spanid)
-                                        liname.appendChild(spanname)
-                                        lidate.appendChild(spandate)
-                                        
-                                        document.querySelector('.one').appendChild(liid)
-                                        document.querySelector('.two').appendChild(liname)
-                                        document.querySelector('.three').appendChild(lidate)
-                                    }
-                                    const names = document.querySelectorAll('[data-active]')
-                                    
-                                    allcheck(names)
-                                    for (const i of names) {
-                                        namesa(i)
-                                    }
-                                }
+                            i.classList[0] ? i.classList.remove('bg') : i.classList.add('bg')
+                            if (i.dataset.active == 0) {
+                                i.dataset.active = 1
                             } else {
-                                document.querySelector('.one').innerHTML = ''
-                                document.querySelector('.two').innerHTML = ''
-                                document.querySelector('.three').innerHTML = '';
-                                (async () => {
-                                    const res = await fetch('/workerall')
-                                    const data = await res.json()
-                                    for (const i of data.all) {
-                                        const liid = document.createElement('li')
-                                        const liname = document.createElement('li')
-                                        const lidate = document.createElement('li')
-                                        
-                                        const spanid = document.createElement('span')
-                                        spanid.id = 'myBtn'
-                                        spanid.dataset.id = i.worker_id
-                                        const spanname = document.createElement('span')
-                                        spanname.dataset.id = i.worker_id
-                                        spanname.dataset.active = 0
-                                        const spandate = document.createElement('span')
-                                        
-                                        spanid.textContent = i.worker_id
-                                        spanname.textContent = i.worker_fish
-                                        spandate.textContent = i.worker_getdate.split('T')[0]
-                                        
-                                        liid.appendChild(spanid)
-                                        liname.appendChild(spanname)
-                                        lidate.appendChild(spandate)
-                                        
-                                        document.querySelector('.one').appendChild(liid)
-                                        document.querySelector('.two').appendChild(liname)
-                                        document.querySelector('.three').appendChild(lidate)
-                                    }
-                                    const names = document.querySelectorAll('[data-active]')
-                                    
-                                    allcheck(names)
-                                    for (const i of names) {
-                                        namesa(i)
-                                    }
-                                })()
+                                i.dataset.active = 0
                             }
                         }
+                    }
+                }
+                
+                btn.onclick = async (e) => {
+                    if(input1.value && input2.value){
+                        const res = await fetch('/workerallfilter', {
+                            method: "POST",
+                            headers: {
+                                'Content-type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                from: input1.value,
+                                to: input2.value
+                            })
+                        })
                         
+                        const data = await res.json()
+                        
+                        if(data.all.length){
+                            document.querySelector('.one').innerHTML = ''
+                            document.querySelector('.two').innerHTML = ''
+                            document.querySelector('.three').innerHTML = ''
+                            for (const i of data.all) {
+                                const liid = document.createElement('li')
+                                const liname = document.createElement('li')
+                                const lidate = document.createElement('li')
+                                
+                                const spanid = document.createElement('span')
+                                spanid.id = 'myBtn'
+                                spanid.dataset.id = i.worker_id
+                                const spanname = document.createElement('span')
+                                spanname.dataset.id = i.worker_id
+                                spanname.dataset.active = 0
+                                const spandate = document.createElement('span')
+                                
+                                spanid.textContent = i.worker_id
+                                spanname.textContent = i.worker_fish
+                                spandate.textContent = i.worker_getdate.split('T')[0]
+                                
+                                liid.appendChild(spanid)
+                                liname.appendChild(spanname)
+                                lidate.appendChild(spandate)
+                                
+                                document.querySelector('.one').appendChild(liid)
+                                document.querySelector('.two').appendChild(liname)
+                                document.querySelector('.three').appendChild(lidate)
+                            }
+                            const names = document.querySelectorAll('[data-active]')
+                            
+                            allcheck(names)
+                            for (const i of names) {
+                                namesa(i)
+                            }
+                        }
+                    } else {
+                        document.querySelector('.one').innerHTML = ''
+                        document.querySelector('.two').innerHTML = ''
+                        document.querySelector('.three').innerHTML = '';
                         (async () => {
                             const res = await fetch('/workerall')
                             const data = await res.json()
@@ -348,54 +325,92 @@
                             for (const i of names) {
                                 namesa(i)
                             }
-                            var btna = document.querySelectorAll("#myBtn");
-                            const imgad = document.querySelector('.userimg')
-                            for (const i of btna) {
-                                i.onclick = async function(e) {
-                                    console.log(e.target.dataset);
-                                    modal.style.display = "block";
-                                    // log
-                                    const res = await fetch(`/img/${e.target.dataset.id}`)
-                                    const data = await res.blob()
-                                    const imageBase64 = URL.createObjectURL(data)
-                                    console.log({imageBase64});
-                                    imgad.src = imageBase64
-                                    console.log(imgad.src);
-                                }
-                            }
                         })()
+                    }
+                }
+                
+                (async () => {
+                    const res = await fetch('/workerall')
+                    const data = await res.json()
+                    for (const i of data.all) {
+                        const liid = document.createElement('li')
+                        const liname = document.createElement('li')
+                        const lidate = document.createElement('li')
                         
-                        exportb.ondblclick = async (e) => {
-                            const ids = []
-                            
-                            const idsa = document.querySelectorAll('[data-active]');
-                            for (const i of idsa) {
-                                ids.push({
-                                    id: i.dataset.id,
-                                    active: i.dataset.active
-                                })
-                            }
-                            const results = ids.filter(el => el.active == 1)
-                            const res = await fetch('/excelexport', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    id: results
-                                })
-                            })
-                            alert('3 sekund kuting')
-                            setTimeout(() => {
-                                const a = document.createElement('a')
-                                a.setAttribute('href', '/xisobot')
-                                // a.setAttribute('target', '_blank')
-                                a.setAttribute('download', 'xisobot.xls')
-                                a.click()
-                            }, 3000)
-                            
+                        const spanid = document.createElement('span')
+                        spanid.id = 'myBtn'
+                        spanid.dataset.id = i.worker_id
+                        const spanname = document.createElement('span')
+                        spanname.dataset.id = i.worker_id
+                        spanname.dataset.active = 0
+                        const spandate = document.createElement('span')
+                        
+                        spanid.textContent = i.worker_id
+                        spanname.textContent = i.worker_fish
+                        spandate.textContent = i.worker_getdate.split('T')[0]
+                        
+                        liid.appendChild(spanid)
+                        liname.appendChild(spanname)
+                        lidate.appendChild(spandate)
+                        
+                        document.querySelector('.one').appendChild(liid)
+                        document.querySelector('.two').appendChild(liname)
+                        document.querySelector('.three').appendChild(lidate)
+                    }
+                    const names = document.querySelectorAll('[data-active]')
+                    
+                    allcheck(names)
+                    for (const i of names) {
+                        namesa(i)
+                    }
+                    var btna = document.querySelectorAll("#myBtn");
+                    const imgad = document.querySelector('.userimg')
+                    for (const i of btna) {
+                        i.onclick = async function(e) {
+                            console.log(e.target.dataset);
+                            modal.style.display = "block";
+                            // log
+                            const res = await fetch(`/img/${e.target.dataset.id}`)
+                            const data = await res.blob()
+                            const imageBase64 = URL.createObjectURL(data)
+                            console.log({imageBase64});
+                            imgad.src = imageBase64
+                            console.log(imgad.src);
                         }
-                        
-                    </script>
-                </body>
-                </html>
+                    }
+                })()
+                
+                exportb.ondblclick = async (e) => {
+                    const ids = []
+                    
+                    const idsa = document.querySelectorAll('[data-active]');
+                    for (const i of idsa) {
+                        ids.push({
+                            id: i.dataset.id,
+                            active: i.dataset.active
+                        })
+                    }
+                    const results = ids.filter(el => el.active == 1)
+                    const res = await fetch('/excelexport', {
+                        method: 'POST',
+                        headers: {
+                            'Content-type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: results
+                        })
+                    })
+                    alert('3 sekund kuting')
+                    setTimeout(() => {
+                        const a = document.createElement('a')
+                        a.setAttribute('href', '/xisobot')
+                        // a.setAttribute('target', '_blank')
+                        a.setAttribute('download', 'xisobot.xls')
+                        a.click()
+                    }, 3000)
+                    
+                }
+                
+            </script>
+        </body>
+        </html>

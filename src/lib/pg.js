@@ -8,7 +8,6 @@ const pool = new pg.Pool({
     database: 'pokizaid'
 })
 
-
 const uniqRow = async (queryy, ...arr) => {
     try{
         const client = await pool.connect()

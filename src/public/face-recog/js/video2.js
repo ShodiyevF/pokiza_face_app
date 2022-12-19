@@ -1,4 +1,4 @@
-try {    
+try {
     const a = document.querySelector('.a')
     const b = document.querySelector('.b')
     const button = document.querySelector('.ads')
@@ -64,6 +64,7 @@ try {
                                 }, 3000)
                             } else {
                                 results.forEach( async (result, i) => {
+                                11
                                     if(results[0]._label == 'unknown'){
                                         alert.classList.remove('display_none')
                                         alert.classList.remove('alert-ok')
