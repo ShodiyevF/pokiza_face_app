@@ -332,6 +332,7 @@
                 (async () => {
                     const res = await fetch('/workerall')
                     const data = await res.json()
+                    console.log(data);
                     for (const i of data.all) {
                         const liid = document.createElement('li')
                         const liname = document.createElement('li')
@@ -391,6 +392,7 @@
                         })
                     }
                     const results = ids.filter(el => el.active == 1)
+                    console.log(results);
                     const res = await fetch('/excelexport', {
                         method: 'POST',
                         headers: {
@@ -400,6 +402,7 @@
                             id: results
                         })
                     })
+                    console.log('asdf');
                     alert('3 sekund kuting')
                     setTimeout(() => {
                         const a = document.createElement('a')

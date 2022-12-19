@@ -1,6 +1,5 @@
 create database pokizaid
 
-
 drop table if exists workers cascade;
 create table workers(
     worker_id int generated always as identity primary key,
