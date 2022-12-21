@@ -22,6 +22,7 @@ const storage = multer.diskStorage({
         } else {
             console.log('asd');
             const last = await uniqRow('select * from workers order by worker_id desc limit 1')
+            
             cb(null, (last.rows.length ? last.rows[0].worker_id : 1) + ".jpg")
         }
     }

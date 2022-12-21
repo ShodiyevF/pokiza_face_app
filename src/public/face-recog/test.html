@@ -1,0 +1,26 @@
+<html>
+
+<body>
+    <div>
+        <input type="file" id="image-input" accept="image/*">
+        <img id="preview"></img>
+    </div>
+    
+    <script>
+        const _URL = window.URL || window.webkitURL;
+        document.querySelector('#image-input').addEventListener('change',function (e) {
+            let file, img;
+            if ((file = this.files[0])) {
+                img = new Image();
+                const objectUrl = _URL.createObjectURL(file);
+                img.onload = function () {
+                    alert(this.width + " " + this.height);
+                    _URL.revokeObjectURL(objectUrl);
+                };
+                img.src = objectUrl;
+            }
+        });
+    </script>
+</body>
+
+</html>

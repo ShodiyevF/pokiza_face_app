@@ -49,6 +49,10 @@ app.get('/facerecog', (req, res) => {
     res.sendFile(path.join(__dirname, '/public', '/face-recog', '/index.html'))
 })
 
+app.get('/test', (req, res) => {
+    res.sendFile(path.join(__dirname, '/public', '/face-recog', '/test.html'))
+})
+
 app.get('/addworker', (req, res) => {
     res.sendFile(path.join(__dirname, '/public', '/pages', '/index.html'))
 })
