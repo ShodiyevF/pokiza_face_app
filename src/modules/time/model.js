@@ -2,9 +2,8 @@ const { calculateTime, timeConvert } = require('../../lib/calctime')
 const { daysInCurrentMonth } = require('../../lib/getday')
 const { uniqRow } = require('../../lib/pg')
 
-const excelExportModel = async ( {id} ) => {
+const excelExportModel = async ( {from, to, id} ) => {
     try {
-        console.log(id);
         const workers = []
         const query = `
         select * from workers where worker_id = $1 limit 1
@@ -72,7 +71,15 @@ const excelExportModel = async ( {id} ) => {
         }
         const a = []
         for (const i of workers) {
-            const workertimes = await uniqRow('select * from settime where worker_id = $1', i.worker_id)
+            const query = `
+            select
+            *,
+            TO_CHAR(w.worker_getdate, 'DD-MM-YYYY')
+            from settime as st
+            inner join workers as w on w.worker_id = st.worker_id
+            where TO_CHAR(st.time_date, 'DD-MM-YYYY') >= $1 and TO_CHAR(st.time_date, 'DD-MM-YYYY') < $2 and w.worker_id = $3;
+            `
+            const workertimes = await uniqRow(query, from, to, i.worker_id)
             const getMonth = workertimes.rows.filter(el => el.time_date.toString().includes(`${month[0]}${month[1]}${month[2]}`))
             const worker = {
                 id: i.worker_id,
@@ -93,7 +100,6 @@ const excelExportModel = async ( {id} ) => {
                 await (fulltime != 'none' ? fullresult += fulltime : fullresult)
                 
             }
-            console.log(worker);
             worker[`allresult`] = timeConvert(fullresult);
             a.push(worker)
         }

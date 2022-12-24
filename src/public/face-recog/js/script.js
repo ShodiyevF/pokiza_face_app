@@ -135,8 +135,6 @@ try {
                             const img = await faceapi.fetchImage(`/worker/get/${counter}/${label}`)
                             const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
                             console.log(await faceapi); 
-                            // console.log(detections);
-                            // console.log(detections ? detections.descriptor : 'null');
                             if (typeof detections !== 'undefined') {
                                 descriptions.push(detections.descriptor)
                                 return new faceapi.LabeledFaceDescriptors(label, descriptions)

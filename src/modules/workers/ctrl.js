@@ -1,4 +1,5 @@
 const { workerPostModel, workersGetModel, workersFilterModel, workerPostTimeModel } = require("./model")
+const path = require('path')
 
 const workerPostCtrl = async (req, res) => {
     try {
@@ -21,7 +22,7 @@ const workerPostCtrl = async (req, res) => {
 
 const workersGetCtrl = async (req, res) => {
     try {
-        const all = workersGetModel()
+        const all = workersGetModel(req.params)
         res.json({
             all: await all
         })
@@ -33,10 +34,10 @@ const workersGetCtrl = async (req, res) => {
 const workersFilterCtrl = async (req, res) => {
     try {
         if(req.body.from && req.body.to){
-            const all = workersFilterModel()
+            const all = workersFilterModel(req.body)
             res.json({
                 status: 200,
-                all,
+                all: await all,
                 message: `ishchilar ro'yhati jo'natildi`
             })
         } else {
@@ -53,11 +54,11 @@ const workersFilterCtrl = async (req, res) => {
 const workerGetImgCtrl = async (req, res) => {
     try {
         if(req.params.id){
-            res.sendFile(path.join(__dirname, '../', '../', 'face_images/', `${req.params.id}.jpg`))
-            return res.json({
-                status: 200,
-                message: `Rasm jo'natildi`
-            })
+            res.sendFile(path.join(__dirname, '../', '../', '../', '../', 'face_images/', `${req.params.id}.jpg`))
+            // return res.json({
+            //     status: 200,
+            //     message: `Rasm jo'natildi`
+            // })
         } else {
             return res.json({
                 status: 400,
@@ -73,9 +74,7 @@ const workerPostTimeCtrl = async (req, res) => {
     try {
         if(req.body.id){
             const workerTimeModel = workerPostTimeModel(req.body)
-            res.json(workerTimeModel)
-            // if(workerTimeModel.status == 200){
-            // } 
+            res.json(await workerTimeModel)
         } else {
             return res.json({
                 status: 400,

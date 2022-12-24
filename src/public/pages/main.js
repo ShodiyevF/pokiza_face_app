@@ -22,7 +22,7 @@ try {
                 const filetype = filea.value.split('.')[filea.value.split('.').length - 1]
                 console.log(img.width + ' ENI', img.width + " BOYI");
                 if(img.width > 600 && img.width > 600 ){
-                    return alert(`rasmni eni va boyi 600 dan kotta bo'lishi kerak`)
+                    return alert(`rasmni eni va boyi 600 dan kichik bo'lishi kerak`)
                 } else if (!(text.value)) {
                     text.style.borderColor = 'red'
                 } else if (!(filea.value)) {

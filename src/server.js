@@ -8,7 +8,8 @@ const path = require('path')
 const app = express()
 let httpServer = http.createServer(app)
 
-// process.env.NODE_ENV = 'production';
+process.env.NODE_ENV = 'production';
+console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
     httpServer = https.createServer({
         cert: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/cert.pem', 'UTF-8'),

@@ -4,248 +4,299 @@ try {
     const a = document.querySelector('.a')
     const b = document.querySelector('.b')
     const button = document.querySelector('.ads')
-    const content = document.querySelector('.asd')
-    const alert = document.querySelector('.alert')
-    const aalert = document.querySelector('.asdf')
-    const alerttext = document.querySelector('.alert-text')
-    // const { count_duplicate } = ("./three.js");
+    const content = document.querySelector('.asd');
+    const alert = document.querySelector('.alert');
+    const aalert = document.querySelector('.asdf');;
+    const alerttext = document.querySelector('.alert-text');
+    const loading = document.querySelector('.loading');
+    const loading_ani = document.querySelector('.loading_ani');
+    const wrapper = document.querySelector('.wrappera');
     
-    // const 
-    
-    
-    
-    // button.onclick = async () => {
-    
-    // if(a.value == 'Test' && b.value == 'Test'){
-    content.classList.remove('test')
-    document.querySelector('.wrapper').classList.add('test')
-    Promise.all([
-        faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-        faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
-        faceapi.nets.faceExpressionNet.loadFromUri('/models')
-    ]).then(start)
-    
-    async function start() {
-        
-        var video = await document.getElementById('video');
-        
-        navigator.getUserMedia(
-            { video:{} },
-            stream => video.srcObject = stream,
-            err => console.error(err)
-            )
+    button.onclick = async () => {
+        if(a.value == 'Test' && b.value == 'Test'){
+            content.classList.remove('test')
+            document.querySelector('.wrapper').classList.add('test')
+            Promise.all([
+                faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+                faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+                faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
+                faceapi.nets.faceExpressionNet.loadFromUri('/models')
+            ]).then(start)
             
-            recognizeFaces()
-        }
-        
-        async function recognizeFaces() {
-            
-            var canvas = document.getElementById('canvas');
-            
-            const labeledDescriptors = await loadLabeledImages()
-            const fullresults = labeledDescriptors.filter(el => typeof el !== 'undefined')
-            const faceMatcher = new faceapi.FaceMatcher(fullresults, 0.7)
-            
-            
-            console.log(video.width, "VIDEO WIDTH");
-            const displaySize = { width: video.width, height: video.height }
-            faceapi.matchDimensions(canvas, displaySize)
-            
-            var canvas = document.getElementById('canvas');
-            var context = canvas.getContext('2d');
-            let image
-            let image2
-            let image3  
-            document.getElementById("snap").addEventListener("click", async function (e) {
-                console.log('asd')
+            async function start() {
                 
-                let detections2
-                let detections3
+                const video = await document.getElementById('video');
                 
-                context.drawImage(video, 0, 0, 640, 480)
-                const dataurl = canvas.toDataURL();
-                var img = document.createElement('img');
-                img.src = dataurl;
-                // await (img.style.width = '100%')
-                // await (img.style.height = '100%')
-                // console.log(await img.width, 'KEYN');
-                // console.log(await img.height, 'KEYN');
-                await (image = img)
-                console.log(await image.width, "IMAGE WIDTH" );
-                console.log(await image.height );
-                
-                const displaySize = await { width: image.width, height: image.height }
-                
-                faceapi.matchDimensions(canvas, displaySize)
-                
-                setTimeout( async () => {
-                    var context2 = canvas.getContext('2d');
-                    context2.drawImage(video, 0, 0, 640, 480)
-                    const dataurl2 = canvas.toDataURL();
-                    var img2 = document.createElement('img');
-                    img2.src = dataurl2;
-                    await (image2 = img2)
-                }, 300)
-                
-                
-                setTimeout( async () => {
-                    var context3 = canvas.getContext('2d');
-                    context3.drawImage(video, 0, 0, 640, 480)
-                    const dataurl3 = canvas.toDataURL();
-                    var img3 = document.createElement('img');
-                    img3.src = dataurl3;
-                    await (image3 = img3)
-                    console.log(image);
-                    aalert.src = image.src
-                    var start = new Date().getTime() / 1000;
+                navigator.getUserMedia(
+                    { video:{} },
+                    stream => video.srcObject = stream,
+                    err => console.error(err)
+                    )
                     
-                    const detections = await faceapi.detectAllFaces(image).withFaceLandmarks().withFaceDescriptors()
-                    // const detections = await faceapi.detectSingleFace(image).withFaceLandmarks(true)
-                    console.log(detections);
-                    var end = new Date().getTime() / 1000;
-                    console.log(end - start)
-                    detections2 = await faceapi.detectAllFaces(image2).withFaceLandmarks().withFaceDescriptors()
-                    detections3 = await faceapi.detectAllFaces(image3).withFaceLandmarks().withFaceDescriptors()
-                    console.log(detections2);
-                    console.log(detections3);
-                    if(detections.length){
-                        console.log('kirdi');
-                        const resizedDetections = faceapi.resizeResults(detections, displaySize)
-                        const results = resizedDetections.map((d) => {
-                            return faceMatcher.findBestMatch(d.descriptor)
-                        })
+                    recognizeFaces()
+                }
+                
+                async function recognizeFaces() {
+                    
+                    const canvas = document.getElementById('canvas');
+                    const canvasa = document.querySelector('body');
+                    
+                    const labeledDescriptors = await loadLabeledImages()
+                    const fullresults = labeledDescriptors.filter(el => typeof el !== 'undefined')
+                    const faceMatcher = new faceapi.FaceMatcher(fullresults, 0.7)
+                    
+                    loading.classList.add('test')
+                    wrapper.classList.remove('test')
+                    
+                    console.log(video.width, "VIDEO WIDTH");
+                    const displaySize = { width: video.width, height: video.height }
+                    faceapi.matchDimensions(canvas, displaySize)
+                    
+                    const context = canvas.getContext('2d');
+                    let image
+                    let image2
+                    let image3  
+                    let image4
+                    document.getElementById("snap").addEventListener("click", async function (e) {
+                        const start = new Date().getTime() / 1000;
                         
-                        const resizedDetections2 = faceapi.resizeResults(detections, displaySize)
-                        const results2 = resizedDetections2.map((d) => {
-                            return faceMatcher.findBestMatch(d.descriptor)
-                        })
+                        let detections2
+                        let detections3
+                        let detections4
                         
-                        const resizedDetections3 = faceapi.resizeResults(detections, displaySize)
-                        const results3 = resizedDetections3.map((d) => {
-                            return faceMatcher.findBestMatch(d.descriptor)
-                        })
+                        context.drawImage(video, 0, 0, 640, 480)
+                        const dataurl = canvas.toDataURL();
+                        const img = document.createElement('img');
+                        img.src = dataurl;
+                        await (image = img)
+                        const detections = await faceapi.detectAllFaces(image).withFaceLandmarks().withFaceDescriptors()
                         
-                        const arr = []
-                        arr.push(results[0]._label)
-                        arr.push(results2[0]._label)
-                        arr.push(results3[0]._label)
+                        const displaySize = await { width: image.width, height: image.height }
                         
-                        function count_duplicate(a){
-                            let counts = {}
+                        faceapi.matchDimensions(canvas, displaySize)
+                        
+                        setTimeout( async () => {
+                            const context2 = canvas.getContext('2d');
+                            context2.drawImage(video, 0, 0, 640, 480)
+                            const dataurl2 = canvas.toDataURL();
+                            const img2 = document.createElement('img');
+                            img2.src = dataurl2;
+                            await (image2 = img2)
+                            img2.width = 200
+                            img2.height = 200
+                            detections2 = await faceapi.detectAllFaces(image2).withFaceLandmarks().withFaceDescriptors()
+                        }, 1000)
+                        
+                        
+                        setTimeout( async () => {
+                            const context3 = canvas.getContext('2d');
+                            context3.drawImage(video, 0, 0, 640, 480)
+                            const dataurl3 = canvas.toDataURL();
+                            const img3 = document.createElement('img');
+                            img3.src = dataurl3;
+                            await (image3 = img3)
+                            img3.width = 200
+                            img3.height = 200
+                            detections3 = await faceapi.detectAllFaces(image3).withFaceLandmarks().withFaceDescriptors()
                             
-                            for(let i =0; i < a.length; i++){ 
-                                if (counts[a[i]]){
-                                    counts[a[i]] += 1
-                                } else {
-                                    counts[a[i]] = 1
-                                }
-                            }  
-                            // for (let prop in counts){
-                            //     if (counts[prop] >= 2){
-                            //         console.log(prop + " counted: " + counts[prop] + " times.")
-                            //     }
-                            // }
-                            return counts
-                        }
-                        const three_check = count_duplicate(arr)
+                        }, 2000)
                         
-                        if (Object.values(count_duplicate(arr))[0] == 3) {
-                            // console.log('asdadvzx');
-                            // console.log(Object.keys(count_duplicate(arr))[0])
-                            // if(results.length == 0){
-                            //     alert.classList.remove('display_none')
-                            //     alert.classList.remove('alert-ok')
-                            //     alert.classList.add('alert-no')
-                            //     alerttext.textContent = `Hech kim yoq ❔ `
-                            //     setTimeout(() => {
-                            //         alert.classList.add('display_none')
-                            //     }, 3000)
-                            // } else {
-                            // results.forEach( async (result, i) => {
-                            // if(results[0]._label == 'unknown'){
-                            //     alert.classList.remove('display_none')
-                            //     alert.classList.remove('alert-ok')
-                            //     alert.classList.add('alert-no')
-                            //     alerttext.textContent = `Bu ishchi bazadan topilmadi ❗️ `
-                            // } else if (results.length > 1) {
-                            //     alert.classList.remove('display_none')
-                            //     alert.classList.remove('alert-ok')
-                            //     alert.classList.add('alert-no')
-                            //     alerttext.textContent = `Kameraga faqat bir kishi qarasin ❗️`
-                            // } else if (results.length == 1) {
-                            const res = await fetch('/worker/post/time', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    id: Object.keys(count_duplicate(arr))[0]
+                        setTimeout(async () => {
+                            const context4 = canvas.getContext('2d');
+                            context4.drawImage(video, 0, 0, 640, 480)
+                            const dataurl4 = canvas.toDataURL();
+                            const img4 = document.createElement('img');
+                            img4.src = dataurl4;
+                            await (image4 = img4)
+                            img4.width = 200
+                            img4.height = 200
+                            detections4 = await faceapi.detectAllFaces(image4).withFaceLandmarks().withFaceDescriptors()
+                            
+                            if(detections.length){
+                                const resizedDetections = faceapi.resizeResults(detections, displaySize)
+                                const results = resizedDetections.map((d) => {
+                                    return faceMatcher.findBestMatch(d.descriptor)
                                 })
-                            })
-                            const data = await res.json()
-                            var enda = new Date().getTime() / 1000;
-                            if (data.status == 200){
-                                alert.classList.add('alert-ok')
-                                alert.classList.remove('alert-no')
-                                alerttext.textContent = 'Ketish vaqti tasdiqlandi ✅'
-                            } else if (data.status == 201) {
-                                alert.classList.remove('display_none')
-                                alert.classList.remove('alert-no')
-                                alert.classList.add('alert-ok')
-                                alerttext.textContent = 'Kelish vaqti tasdiqlandi ✅'
-                            } else if (data.status == 400) {
+                                
+                                const resizedDetections2 = faceapi.resizeResults(detections2, displaySize)
+                                const results2 = resizedDetections2.map((d) => {
+                                    return faceMatcher.findBestMatch(d.descriptor)
+                                })
+                                
+                                const resizedDetections3 = faceapi.resizeResults(detections3, displaySize)
+                                const results3 = resizedDetections3.map((d) => {
+                                    return faceMatcher.findBestMatch(d.descriptor)
+                                })
+                                
+                                const resizedDetections4 = faceapi.resizeResults(detections4, displaySize)
+                                const results4 = resizedDetections4.map((d) => {
+                                    return faceMatcher.findBestMatch(d.descriptor)
+                                })
+                                
+                                const arr = []
+                                console.log(results[0])
+                                console.log(results2[0])
+                                console.log(results3[0])
+                                console.log(results4[0])
+                                
+                                if (results[0] && results2[0] && results3[0] && results4[0]) {
+                                    arr.push(results[0]._label)
+                                    arr.push(results2[0]._label)
+                                    arr.push(results3[0]._label)
+                                    arr.push(results4[0]._label)
+                                    
+                                    console.log(arr)
+                                    
+                                    function count_duplicate(a){
+                                        let counts = {}
+                                        
+                                        for(let i =0; i < a.length; i++){ 
+                                            if (counts[a[i]]){
+                                                counts[a[i]] += 1
+                                            } else {
+                                                counts[a[i]] = 1
+                                            }
+                                        }
+                                        return counts
+                                    }
+                                    
+                                    const result = Object.keys(count_duplicate(arr))[0]
+                                    if (Object.keys(count_duplicate(arr)).length <= 1) {
+                                        if (results.length <= 1 || results2.length <= 1 || results3.length <= 1 || results4.length <= 1) {
+                                            console.log(arr.length);
+                                            if (arr.length == 4) {
+                                                if(result == '0'){
+                                                    alert.classList.remove('display_none')
+                                                    alert.classList.remove('alert-ok')
+                                                    alert.classList.add('alert-no')
+                                                    alerttext.textContent = `Hech kim yoq ❔ `
+                                                    setTimeout(() => {
+                                                        alert.classList.add('display_none')
+                                                    }, 2000)
+                                                } else {
+                                                    if((typeof result == 'number' ? +result : result) == 1000000){
+                                                        console.log('bu ishchi')
+                                                        alert.classList.remove('display_none')
+                                                        alert.classList.remove('alert-ok')
+                                                        alert.classList.add('alert-no')
+                                                        alerttext.textContent = `Bu ishchi bazadan topilmadi ❗️ `
+                                                        setTimeout(() => {
+                                                            alert.classList.add('display_none')
+                                                        }, 2000)
+                                                    } else if(results[0]._label == 'unknown' || results2[0]._label == 'unknown' || results3[0]._label == 'unknown'|| results4[0]._label == 'unknown'){
+                                                        console.log()
+                                                        alert.classList.remove('display_none')
+                                                        alert.classList.remove('alert-ok')
+                                                        alert.classList.add('alert-no')
+                                                        alerttext.textContent = `Bu ishchi bazadan topilmadi ❗️ `
+                                                        setTimeout(() => {
+                                                            alert.classList.add('display_none')
+                                                        }, 2000)
+                                                    } else {
+                                                        const res = await fetch('/worker/post/time', {
+                                                            method: 'POST',
+                                                            headers: {
+                                                                'Content-type': 'application/json'
+                                                            },
+                                                            body: JSON.stringify({
+                                                                id: +result
+                                                            })
+                                                        })
+                                                        const data = await res.json()
+                                                        const end = new Date().getTime() / 1000;
+                                                        console.log(end - start)
+                                                        if (data.status == 200){
+                                                            alert.classList.remove('display_none')
+                                                            alert.classList.remove('alert-no')
+                                                            alert.classList.add('alert-ok')
+                                                            alerttext.textContent = 'Ketish vaqti tasdiqlandi ✅'
+                                                        } else if (data.status == 201) {
+                                                            alert.classList.remove('display_none')
+                                                            alert.classList.remove('alert-no')
+                                                            alert.classList.add('alert-ok')
+                                                            alerttext.textContent = 'Kelish vaqti tasdiqlandi ✅'
+                                                        } else if (data.status == 400) {
+                                                            alert.classList.remove('display_none')
+                                                            alert.classList.remove('alert-ok')
+                                                            alert.classList.add('alert-no')
+                                                            alerttext.textContent = `15 daqiqadan so'ng qayta uruning ❌`
+                                                        } else if (data.status == 401) {
+                                                            alert.classList.remove('display_none')
+                                                            alert.classList.remove('alert-ok')
+                                                            alert.classList.add('alert-no')
+                                                            alerttext.textContent = 'Bugungi ish kuni yakunlangan ❌'
+                                                        }
+                                                        setTimeout(() => {
+                                                            alert.classList.add('display_none')
+                                                        }, 2000)
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            alert.classList.remove('display_none')
+                                            alert.classList.remove('alert-ok')
+                                            alert.classList.add('alert-no')
+                                            alerttext.textContent = `Kameraga faqat bir kishi qarasin ❗️`
+                                            setTimeout(() => {
+                                                alert.classList.add('display_none')
+                                            }, 2000)
+                                        }
+                                    } else {
+                                        alert.classList.remove('display_none')
+                                        alert.classList.remove('alert-ok')
+                                        alert.classList.add('alert-no')
+                                        alerttext.textContent = `Cameraga yaxshiroq qarang ❗️`
+                                        setTimeout(() => {
+                                            alert.classList.add('display_none')
+                                        }, 2000)
+                                    }
+                                } else {
+                                    alert.classList.remove('display_none')
+                                    alert.classList.remove('alert-ok')
+                                    alert.classList.add('alert-no')
+                                    alerttext.textContent = `Cameraga yaxshiroq qarang ❗️`
+                                    setTimeout(() => {
+                                        alert.classList.add('display_none')
+                                    }, 2000)
+                                }
+                            } else {
                                 alert.classList.remove('display_none')
                                 alert.classList.remove('alert-ok')
                                 alert.classList.add('alert-no')
-                                alerttext.textContent = `15 daqiqadan so'ng qayta uruning ❌`
-                            } else if (data.status == 401) {
-                                alert.classList.remove('display_none')
-                                alert.classList.remove('alert-ok')
-                                alert.classList.add('alert-no')
-                                alerttext.textContent = 'Bugungi ish kuni yakunlangan ❌'
+                                alerttext.textContent = `Cameraga yaxshiroq qarang ❗️`
+                                setTimeout(() => {
+                                    alert.classList.add('display_none')
+                                }, 2000)
                             }
-                            setTimeout(() => {
-                                alert.classList.add('display_none')
-                            }, 3000)
-                            // }
-                            // })
-                            // }
-                        }
-                    } else {
-                        alert.classList.remove('display_none')
-                        alert.classList.remove('alert-ok')
-                        alert.classList.add('alert-no')
-                        alerttext.textContent = `Iltimos qayta uruning ❗️`
+                        }, 3000)
+                    })  
+                }
+                
+                async function loadLabeledImages() {
+                    const res = await fetch('/workerall/1')
+                    const data = await res.json()
+                    const labels = []
+                    for (const i of data.all) {
+                        labels.push((i.worker_id).toString())
                     }
-                    
-                }, 400)
-            })  
-        }
-        
-        async function loadLabeledImages() {
-            const res = await fetch('/workerall')
-            const data = await res.json()
-            const labels = []
-            for (const i of data.all) {
-                labels.push((i.worker_id).toString())
-            }
-            let counter = 0
-            return Promise.all(
-                labels.map(async label => {
-                    counter += 1
-                    const descriptions = []
-                    const img = await faceapi.fetchImage(`/worker/get/${counter}/${label}`)
-                    const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
-                    if (typeof detections !== 'undefined') {
-                        descriptions.push(detections.descriptor)
-                        return new faceapi.LabeledFaceDescriptors(label, descriptions)
+                    let counter = 0
+                    return Promise.all(
+                        labels.map(async label => {
+                            counter += 1
+                            const descriptions = []
+                            const img = await faceapi.fetchImage(`/worker/get/${counter}/${label}`)
+                            const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
+                            if (typeof detections !== 'undefined') {
+                                descriptions.push(detections.descriptor)
+                                const img2 = await faceapi.fetchImage(`/worker/get/1000000/testuchun`)
+                                const detections2 = await faceapi.detectSingleFace(img2).withFaceLandmarks().withFaceDescriptor()
+                                descriptions.push(detections2.descriptor)
+                                return new faceapi.LabeledFaceDescriptors(label, descriptions)
+                            }
+                        }))
                     }
-                    console.log(descriptions)
-                }))
+                }
             }
-            // }
-            // }
             
         } catch(err) {
             console.log(err.message)
