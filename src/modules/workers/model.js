@@ -15,12 +15,12 @@ const workerGetTimesModel = async () => {
     try {
         const query = `
         select
-        time_get,
-        time_end,
-        time_date,
-        time_result,
-        worker_id,
-        worker_fish
+        st.time_get,
+        st.time_end,
+        st.time_date,
+        st.time_result,
+        w.worker_id,
+        w.worker_fish
         from settime as st
         inner join workers as w on w.worker_id = st.worker_id
         `

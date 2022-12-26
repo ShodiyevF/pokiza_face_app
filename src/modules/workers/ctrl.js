@@ -1,4 +1,4 @@
-const { workerPostModel, workersGetModel, workersFilterModel, workerPostTimeModel } = require("./model")
+const { workerPostModel, workersGetModel, workersFilterModel, workerPostTimeModel, workerGetTimesModel } = require("./model")
 const path = require('path')
 
 const workerPostCtrl = async (req, res) => {
@@ -17,6 +17,17 @@ const workerPostCtrl = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message, 'workerPostCtrl')
+    }
+}
+
+const workersGetTimesCtrl = async (req, res) => {
+    try {
+        res.json({
+            status: 200,
+            data: await workerGetTimesModel()
+        })
+    } catch (error) {
+        console.log(error.message, 'workersGetTimesCtrl')
     }
 }
 
@@ -88,6 +99,7 @@ const workerPostTimeCtrl = async (req, res) => {
 
 module.exports = {
     workerPostCtrl,
+    workersGetTimesCtrl,
     workersGetCtrl,
     workersFilterCtrl,
     workerGetImgCtrl,
