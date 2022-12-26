@@ -1,6 +1,7 @@
 const path = require('path')
 const moment = require('moment')
 const { uniqRow } = require("../../lib/pg")
+const { calculateTime } = require('../../lib/calctime')
 
 const workerPostModel = async ({fish}) => {
     try {
@@ -17,7 +18,7 @@ const workerGetTimesModel = async () => {
         select
         st.time_get,
         st.time_end,
-        st.time_date,
+        TO_CHAR(st.time_date, 'DD-MM-YYYY') as date,
         st.time_result,
         w.worker_id,
         w.worker_fish
@@ -88,7 +89,7 @@ const workerPostTimeModel = async ( {id} ) => {
             } else {
                 const asd = checktime.rows.find(el => el.time_end)
                 if (!asd) {
-                    await uniqRow('update settime set time_end = $1 where time_id = $2', hours, checktime.rows[0].time_id)
+                    await uniqRow('update settime set time_end = $1, time_result = $3 where time_id = $2', hours, checktime.rows[0].time_id, calculateTime(checktime.rows[0].time_get, hours))
                     if (typeof id == 'number') {
                         const worker = await uniqRow('select * from workers where worker_id = $1', id)
                         return {

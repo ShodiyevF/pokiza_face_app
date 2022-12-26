@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ish kuni</title>
+    <link rel="stylesheet" href="css/workers.css">
+    <link rel="stylesheet" href="css/settime.css">
+</head>
+<body>
+    <div class="container">
+        <!-- <div class="title">
+            <p>ID</p>
+            <p>FISH</p>
+            <p>KELISH</p>
+            <p>KETISH</p>
+            <p>ISHLANGAN SOAT</p>
+        </div> -->
+        <div class="list_wrapper">
+            <ul class="list list_id">
+            </ul>
+            <ul class="list list_fish">
+
+            </ul>
+            <ul class="list list_kelish">
+
+            </ul>
+            <ul class="list list_ketish">
+
+            </ul>
+            <ul class="list list_jami">
+            </ul>
+            <ul class="list list_date">
+            </ul>
+            
+        </div>
+    </div>
+
+    <script>
+        const list_wrapper = document.querySelector('.list_wrapper')
+        const list_id = document.querySelector('.list_id')
+        const list_fish = document.querySelector('.list_fish')
+        const list_kelish = document.querySelector('.list_kelish')
+        const list_ketish = document.querySelector('.list_ketish')
+        const list_jami = document.querySelector('.list_jami')
+        const list_date = document.querySelector('.list_date')
+        ;(async () => {
+            const res = await fetch('/worker/time/get')
+            const data = await res.json()
+            for (const i of data.data) {
+                const id = document.createElement('li')
+                const fish = document.createElement('li')
+                const kelish = document.createElement('li')
+                const ketish = document.createElement('li')
+                const jami = document.createElement('li')
+                const date = document.createElement('li')
+
+                id.textContent = i.worker_id 
+                fish.textContent = i.worker_fish
+                kelish.textContent = i.time_get
+                ketish.textContent = isNaN(i.time_end) ? i.time_end : 'tugamagan !'
+                jami.textContent = isNaN(i.time_result) ? i.time_result : 'tugamagan !'
+                date.textContent = i.date
+                console.log(fish);
+                list_id.append(id)
+                list_fish.append(fish)
+                list_kelish.append(kelish)
+                list_ketish.append(ketish)
+                list_jami.append(jami)
+                list_date.append(date)
+            }
+        })()
+    </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+.title{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.list_wrapper{
+    height: 500px;
+    margin-top: auto;
+    margin-bottom: auto;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 20px;
+    overflow: auto;
+}
+
+.list{
+    height: 500px;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.name{
+    margin-bottom: 10px;
+    /* background-color: red; */
+}

@@ -62,4 +62,8 @@ app.get('/workers', (req, res) => {
     res.sendFile(path.join(__dirname, '/public', '/pages', '/workers.html'))
 })
 
+app.get('/settime', (req, res) => {
+    res.sendFile(path.join(__dirname, '/public', '/pages', '/settime.html'))
+})
+
 httpServer.listen(443, console.log(443))
