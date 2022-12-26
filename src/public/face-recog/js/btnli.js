@@ -13,7 +13,7 @@ try {
     const wrapper = document.querySelector('.wrappera');
     
     button.onclick = async () => {
-        if(a.value == 'Test' && b.value == 'Test'){
+        if(a.value == 'test' && b.value == 'test'){
             content.classList.remove('test')
             document.querySelector('.wrapper').classList.add('test')
             Promise.all([
@@ -214,16 +214,21 @@ try {
                                                 }
                                             } else {
                                                 alerton(0, `Kameraga faqat bir kishi qarasin ❗️`)
+                                                checkerr = true
                                             }
                                         } else {
                                             alerton(0, `Cameraga yaxshiroq qarang ❗️`)
+                                            checkerr = true
                                         }
                                     } else {
                                         alerton(0, `Cameraga yaxshiroq qarang ❗️`)
+                                        checkerr = true
                                     }
                                 } else {
                                     alerton(0, `Cameraga yaxshiroq qarang ❗️`)
+                                    checkerr = true
                                 }
+                                checkerr = true
                             }, 3000)
                         } else {
                             alerton(0, `Amaliyot bajarilyapti biroz kuting ❗️`)

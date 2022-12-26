@@ -11,6 +11,27 @@ const workerPostModel = async ({fish}) => {
     }
 }
 
+const workerGetTimesModel = async () => {
+    try {
+        const query = `
+        select
+        time_get,
+        time_end,
+        time_date,
+        time_result,
+        worker_id,
+        worker_fish
+        from settime as st
+        inner join workers as w on w.worker_id = st.worker_id
+        `
+        const data = await uniqRow(query)
+        
+        return data.rows
+    } catch (error) {
+        console.log(error.message, 'workerGetTimesModel')
+    }
+}
+
 const workersGetModel = async ({action}) => {
     try {
         let all
@@ -101,6 +122,7 @@ const workerPostTimeModel = async ( {id} ) => {
 
 module.exports = {
     workerPostModel,
+    workerGetTimesModel,
     workersGetModel,
     workersFilterModel,
     workerPostTimeModel
