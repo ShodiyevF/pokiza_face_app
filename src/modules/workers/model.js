@@ -47,6 +47,20 @@ const workersGetModel = async ({action}) => {
     }
 } 
 
+const workerPutFishModel = async ({id, fish}) => {
+    try {
+        const check = await uniqRow('select * from workers where worker_id = $1', id)
+        if(check.rows.length){
+            await uniqRow('update workers set worker_fish = $1 where worker_id = $2', fish, id)
+            return 200
+        } else {
+            return 404
+        }
+    } catch (error) {
+        console.log(error.message, 'workerPutFishModel')
+    }
+}
+
 const workersFilterModel = async ({from, to} ) => {
     try {
         const query = `
@@ -126,5 +140,6 @@ module.exports = {
     workerGetTimesModel,
     workersGetModel,
     workersFilterModel,
-    workerPostTimeModel
+    workerPostTimeModel,
+    workerPutFishModel
 }

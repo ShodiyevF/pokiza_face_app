@@ -10,13 +10,13 @@ let httpServer = http.createServer(app)
 
 process.env.NODE_ENV = 'production';
 console.log(process.env.NODE_ENV)
-if (process.env.NODE_ENV === 'production') {
-    httpServer = https.createServer({
-        cert: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/cert.pem', 'UTF-8'),
-        key: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/privkey.pem', 'UTF-8'),
-        ca: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/fullchain.pem', 'UTF-8')
-    }, app)
-}
+// if (process.env.NODE_ENV === 'production') {
+//     httpServer = https.createServer({
+//         cert: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/cert.pem', 'UTF-8'),
+//         key: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/privkey.pem', 'UTF-8'),
+//         ca: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/fullchain.pem', 'UTF-8')
+//     }, app)
+// }
 
 const basePath = path.join(__dirname, './public')
 const basePatha = path.join(__dirname, './public/face-recog')
@@ -52,6 +52,10 @@ app.get('/facerecog', (req, res) => {
 
 app.get('/test', (req, res) => {
     res.sendFile(path.join(__dirname, '/public', '/face-recog', '/ok.mp3'))
+})
+
+app.get('/editworker', (req, res) => {
+    res.sendFile(path.join(__dirname, '/public', '/pages', '/editworker.html'))
 })
 
 app.get('/addworker', (req, res) => {

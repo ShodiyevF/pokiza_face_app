@@ -28,6 +28,7 @@ try {
                 
                 const video = await document.getElementById('video');
                 
+                
                 navigator.getUserMedia(
                     { video:{} },
                     stream => video.srcObject = stream,
@@ -58,9 +59,9 @@ try {
                     
                     loading.classList.add('test')
                     wrapper.classList.remove('test')
-                    
-                    console.log(video.width, "VIDEO WIDTH");
-                    const displaySize = { width: video.width, height: video.height }
+
+                    console.log(video.offsetWidth, "VIDEO WIDTH");
+                    const displaySize = { width: video.offsetWidth, height: video.offsetHeight }
                     faceapi.matchDimensions(canvas, displaySize)
                     
                     const context = canvas.getContext('2d');
