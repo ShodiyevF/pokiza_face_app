@@ -24,16 +24,67 @@
             align-items: center;
             justify-content: center;
         }
+        
+        .a{
+            margin-right: 10px;
+        }
+        
+        .b{
+            margin-right: 10px;
+        }
+        
+        .wrapper{
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .test.test.test{
+            display: none;
+        }
+        .right{
+            margin-right: 10px;
+        }
     </style>
     
 </head>
 <body>
-    <div class="content">
-        <a style="margin-right: 10px; color: BLACK;" href="/facerecog">CAMERA</a>
-        <a href="/addworker" style="margin-right: 10px;">ISHCHI QO'SHISH</a>
-        <a href="/workers" style="margin-right: 10px;">ISHCHILAR</a>
-        <a href="/settime">KUNLIK HISOBOT</a>
+    <div class="wrapper">
+        <input class="a" type="text" placeholder="login">
+        <input class="b" type="text" placeholder="password">
+        <button class="ads">OK</button>
     </div>
-
+    <div class="content test">
+        <a class="right" style="color: BLACK;" href="/facerecog">CAMERA</a>
+        <a class="right" href="/addworker">ISHCHI QO'SHISH</a>
+        <a class="right" href="/workers">ISHCHILAR</a>
+        <a class="right" href="/settime">KUNLIK HISOBOT</a>
+        <a href="/editworker">TAHRIRLASH</a>
+    </div>
+    
+    <script>
+        
+        const ada = document.querySelector('.a')
+        const b = document.querySelector('.b')
+        const button = document.querySelector('.ads')
+        const content = document.querySelector('.content')
+        
+        const getDate = new Date().getDay()
+        if (localStorage.getItem('check')) {
+            document.querySelector('.wrapper').classList.add('test')
+            content.classList.remove('test')
+        }
+        if(getDate == 1 || !(localStorage.getItem('check'))){            
+            localStorage.setItem('check', false)
+            button.onclick = (e) => {
+                if(ada.value == 'test' && b.value == 'test'){
+                    content.classList.remove('test')
+                    document.querySelector('.wrapper').classList.add('test')
+                    localStorage.setItem('check', true)
+                }
+            }
+        }
+        
+    </script>
 </body>
 </html>

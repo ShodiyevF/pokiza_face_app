@@ -91,12 +91,7 @@
 </head>
 <body>
     
-    <div class="wrapper">
-        <input class="a" type="text" placeholder="login">
-        <input class="b" type="text" placeholder="password">
-        <button class="ads">OK</button>
-    </div>
-    <div class="container test">
+    <div class="container">
         <div style="margin-top: 20px; display: flex;">
             <input class="from" type="text" style="width: 200px; margin-right: 20px;" placeholder="qachondan misol: 01-12-2022">
             <input class="to" type="text" style="width: 230px; margin-right: 20px;" placeholder="qachongacha misol: 04-12-2022">
@@ -165,17 +160,6 @@
             }
         }
         
-        const ada = document.querySelector('.a')
-        const b = document.querySelector('.b')
-        const button = document.querySelector('.ads')
-        const content = document.querySelector('.container')
-        
-        button.onclick = (e) => {
-            if(ada.value == 'test' && b.value == 'test'){
-                content.classList.remove('test')
-                document.querySelector('.wrapper').classList.add('test')
-            }
-        }
         
         const btn = document.querySelector('.button')
         const exportb = document.querySelector('.export')

@@ -13,15 +13,12 @@ try {
             cb(null, path.join(__dirname, '../', '../', '../', '../', 'face_images/'))
         },
         filename: async function(req, file, cb) {
-            console.log(req.params);
             const findedFile = fs.existsSync(path.join(__dirname, '../', '../', '../', '../', 'face_images/', req.params.id + '.jpg'))
             if (req.params.id) {
-                console.log(findedFile);
                 if(findedFile){
                     cb(null, req.params.id + ".jpg")
                 }
             } else {
-                console.log('asd');
                 const last = await uniqRow('select * from workers order by worker_id desc limit 2;')
                 cb(null, (last.rows[1] ? last.rows[1].worker_id : 1) + ".jpg")
             }
