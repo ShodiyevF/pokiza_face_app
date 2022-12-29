@@ -72,7 +72,7 @@ const workerPostTimeModel = async ( {id} ) => {
         
         var date = new Date();
         var now_utc = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
-        date.getUTCDate(), date.getUTCHours() + 4,
+        date.getUTCDate(), date.getUTCHours() + 5,
         date.getUTCMinutes(), date.getUTCSeconds()))
         const minut = (now_utc.getMinutes()).toString().length < 2 ? '0'+now_utc.getMinutes(): now_utc.getMinutes()
         const gethours = (new Date().getHours() * 60) + (new Date().getMinutes())

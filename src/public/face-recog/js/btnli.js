@@ -148,10 +148,6 @@ try {
                                     })
                                     
                                     const arr = []
-                                    console.log(results[0])
-                                    console.log(results2[0])
-                                    console.log(results3[0])
-                                    console.log(results4[0])
                                     
                                     if (results[0] && results2[0] && results3[0] && results4[0]) {
                                         arr.push(results[0]._label)
@@ -177,15 +173,17 @@ try {
                                         const result = Object.keys(count_duplicate(arr))[0]
                                         if (Object.keys(count_duplicate(arr)).length <= 1) {
                                             if (results.length <= 1 || results2.length <= 1 || results3.length <= 1 || results4.length <= 1) {
-                                                console.log(arr.length);
                                                 if (arr.length == 4) {
                                                     if(result == '0'){
                                                         alerton(0, 'Hech kim yoq ❔')
+                                                        checkerr = true
                                                     } else {
                                                         if((typeof result == 'number' ? +result : result) == 1000000){
                                                             alerton(0, 'Bu ishchi bazadan topilmadi ❗️')
+                                                            checkerr = true
                                                         } else if(results[0]._label == 'unknown' || results2[0]._label == 'unknown' || results3[0]._label == 'unknown'|| results4[0]._label == 'unknown'){
                                                             alerton(0, 'Bu ishchi bazadan topilmadi ❗️')
+                                                            checkerr = true
                                                         } else {
                                                             const res = await fetch('/worker/post/time', {
                                                                 method: 'POST',
@@ -208,6 +206,9 @@ try {
                                                             } else if (data.status == 401) {
                                                                 alerton(0, `Bugungi ish kuni yakunlangan ❌`)
                                                             }
+                                                            const audio = new Audio();
+                                                            audio.src ='/test';
+                                                            audio.play();
                                                             checkerr = true
                                                         }
                                                     }

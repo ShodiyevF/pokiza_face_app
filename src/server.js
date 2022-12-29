@@ -51,7 +51,7 @@ app.get('/facerecog', (req, res) => {
 })
 
 app.get('/test', (req, res) => {
-    res.sendFile(path.join(__dirname, '/public', '/face-recog', '/test.html'))
+    res.sendFile(path.join(__dirname, '/public', '/face-recog', '/ok.mp3'))
 })
 
 app.get('/addworker', (req, res) => {
