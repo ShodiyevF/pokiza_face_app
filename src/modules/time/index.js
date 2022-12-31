@@ -1,4 +1,4 @@
-const { excelExportCtrl, getImgByIdCtrl, sendExcelFileCtrl } = require('./ctrl')
+const { excelExportCtrl, getImgByIdCtrl, sendExcelFileCtrl, faceRecognitionCtrl } = require('./ctrl')
 
 
 const fs = require('fs')
@@ -10,7 +10,7 @@ const express = require('express').Router()
 try {
     const storage = multer.diskStorage({
         destination: function(req, file, cb) {
-            cb(null, path.join(__dirname, '../', '../', '../', '../', 'face_images/'))
+            cb(null, path.join(__dirname, '../', '../', '../', '../', 'face_images/', ))
         },
         filename: async function(req, file, cb) {
             const findedFile = fs.existsSync(path.join(__dirname, '../', '../', '../', '../', 'face_images/', req.params.id + '.jpg'))
@@ -31,6 +31,7 @@ try {
     express.get('/xisobot', (req, res) => sendExcelFileCtrl(req, res))
     express.post('/worker/post/img', upload.single('test'), (req, res) => {})
     express.put('/worker/put/img/:id', upload.single('testa'), (req, res) => {})
+    express.post('/facerecognation', (req, res) => faceRecognitionCtrl(req, res))
 } catch (error) {
     console.log(error.message)
 }

@@ -14,7 +14,7 @@ create table settime(
     time_get text not null,
     time_end text,
     time_check text,
-    time_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    time_date text,
     time_result varchar(6),
     worker_id int not null references workers(worker_id)
 );

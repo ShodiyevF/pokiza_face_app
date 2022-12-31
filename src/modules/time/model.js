@@ -1,6 +1,60 @@
 const { calculateTime, timeConvert } = require('../../lib/calctime')
 const { daysInCurrentMonth } = require('../../lib/getday')
 const { uniqRow } = require('../../lib/pg')
+const fs = require('fs')
+const path = require('path')
+const canvas = require('canvas')
+const faceapi = require("@vladmandic/face-api/dist/face-api.node.js");
+const tf = require('@tensorflow/tfjs-node');
+// const faceapi = require('../dist/face-api.node.js'); /
+
+const { Canvas, Image, ImageData } = canvas;
+faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
+
+
+async function image(img) {
+    const buffer = fs.readFileSync(img);
+    const decoded = tf.node.decodeImage(buffer);
+    const casted = decoded.toFloat();
+    const result = casted.expandDims(0);
+    decoded.dispose();
+    casted.dispose();
+    return result;
+}
+async function loadLabeledImages() {
+    // const labels = fs.readdirSync(path.join(__dirname, '../','../','../','../','face_images'))
+    // for (const i of labels) {
+    //     console.log(+i);
+    // }
+    const labels = await uniqRow('select * from workers order by worker_id asc')
+    
+    let counter = 1
+    return Promise.all(labels.rows.map(async label => {
+        const descriptions = []
+        console.log((+label.worker_id))
+        // const 
+        const asd = await image(path.join(__dirname, '../','../','../','../','face_images/', label.worker_id.toString()+'.jpg'))
+        // const readed = fs.readFileSync(path.join(__dirname, '../','../','../','../','face_images/', label.worker_id.toString(), `/${label.worker_fish.split(' ')[0]}.jpg`))
+        // const canvasImg = await canvas.loadImage(readed);
+        // const out = await faceapi.createCanvasFromMedia(canvasImg);
+        const detections = await faceapi.detectSingleFace(asd).withFaceLandmarks().withFaceDescriptor()
+
+        descriptions.push(detections.descriptor)
+        return new faceapi.LabeledFaceDescriptors((label.worker_id).toString(), descriptions)
+    }))
+}
+
+// (async () => {
+//     setTimeout(async () => {
+//         const a = await loadLabeledImages()
+//         for (const i of a) {
+//             // console.log(i);
+//             labeledImages.push(i)
+//             // await uniqRow('insert into')
+//         }
+//     }, 5000)
+// })()
+
 
 const excelExportModel = async ( {from, to, id} ) => {
     try {
@@ -74,12 +128,13 @@ const excelExportModel = async ( {from, to, id} ) => {
             const query = `
             select
             *,
-            TO_CHAR(w.worker_getdate, 'DD-MM-YYYY')
+            split_part(w.worker_getdate::TEXT,'T', 1) as tochar
             from settime as st
             inner join workers as w on w.worker_id = st.worker_id
-            where TO_CHAR(st.time_date, 'DD-MM-YYYY') >= $1 and TO_CHAR(st.time_date, 'DD-MM-YYYY') < $2 and w.worker_id = $3;
+            where w.worker_id = $1;
             `
-            const workertimes = await uniqRow(query, from, to, i.worker_id)
+            // split_part(st.time_date::TEXT,'T', 1) >= $1 and split_part(st.time_date::TEXT,'T', 1) < $2 and 
+            const workertimes = await uniqRow(query, i.worker_id)
             const getMonth = workertimes.rows.filter(el => el.time_date.toString().includes(`${month[0]}${month[1]}${month[2]}`))
             const worker = {
                 id: i.worker_id,
@@ -114,6 +169,31 @@ const excelExportModel = async ( {from, to, id} ) => {
     }
 }
 
+const faceRecognitionModel = async (file) => {
+    try {
+        const labeledDescriptors = await loadLabeledImages()
+        const fullresults = labeledDescriptors.filter(el => typeof el !== 'undefined')
+        const faceMatcher = new faceapi.FaceMatcher(fullresults, 0.7)
+        // const das = await faceapi.fetchImage(file.data)
+        // console.log(file.data);
+        const canvasImg = await canvas.loadImage(file.data);
+        const out = await faceapi.createCanvasFromMedia(canvasImg);
+        const display = { width: out.width, height: out.height}
+        const detections = await faceapi.detectAllFaces(out).withFaceLandmarks().withFaceDescriptors()
+        // const displaySize = { width: detections[0].detection._imageDims._width, height: detections[0].detection._imageDims._height }
+        faceapi.matchDimensions(out, display)
+        const resizedDetections = faceapi.resizeResults(detections, display)
+        const results = resizedDetections.map((d) => {
+            return faceMatcher.findBestMatch(d.descriptor)
+        })
+        console.log(results);
+        return results
+    } catch (error) {
+        console.log(error, 'faceRecognitionModel')
+    }
+}
+
 module.exports = {
-    excelExportModel
+    excelExportModel,
+    faceRecognitionModel
 }

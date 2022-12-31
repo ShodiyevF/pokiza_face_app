@@ -1,5 +1,5 @@
 const path = require('path')
-const { excelExportModel } = require("./model")
+const { excelExportModel, faceRecognitionModel } = require("./model")
 
 const excelExportCtrl = async (req, res) => {
     try {
@@ -17,6 +17,20 @@ const excelExportCtrl = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message, 'excelExportCtrl')
+    }
+}
+
+
+const faceRecognitionCtrl = async (req, res) => {
+    try {
+        if (req.files.file) {
+            const data = await faceRecognitionModel(req.files.file)
+            return res.json({
+                data: data
+            })
+        }
+    } catch (error) {
+        console.log(error.message, 'faceRecognitionCtrl')
     }
 }
 
@@ -42,5 +56,6 @@ const sendExcelFileCtrl = async (req, res) => {
 module.exports = {
     excelExportCtrl,
     getImgByIdCtrl,
-    sendExcelFileCtrl
+    sendExcelFileCtrl,
+    faceRecognitionCtrl
 }

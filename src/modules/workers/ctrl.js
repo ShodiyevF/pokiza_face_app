@@ -91,6 +91,7 @@ const workersFilterCtrl = async (req, res) => {
 const workerGetImgCtrl = async (req, res) => {
     try {
         if(req.params.id){
+            console.log(path.join(__dirname, '../', '../', '../', '../', 'face_images/', `${req.params.id}.jpg`));
             res.sendFile(path.join(__dirname, '../', '../', '../', '../', 'face_images/', `${req.params.id}.jpg`))
             // return res.json({
             //     status: 200,

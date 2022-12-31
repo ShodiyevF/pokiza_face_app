@@ -6,7 +6,7 @@ const { calculateTime } = require('../../lib/calctime')
 const workerPostModel = async ({fish}) => {
     try {
         const last = await uniqRow('select * from workers order by worker_id desc limit 2')
-        await uniqRow('insert into workers (worker_fish, worker_imgpath) values ($1,$2)', fish, (path.join(__dirname, '../', '../', 'face_images/') + (last.rows.length ? last.rows[1].worker_id+1 : 1) + "." + 'JPEG'))
+        await uniqRow('insert into workers (worker_fish, worker_imgpath) values ($1,$2)', fish, (path.join(__dirname, '../', '../', '../', '../', 'face_images/') + (last.rows.length ? last.rows[1].worker_id+1 : 1) + "." + 'JPEG'))
     } catch (error) {
         console.log(error.message, 'workerPostModel')
     }
@@ -84,15 +84,21 @@ const workerPostTimeModel = async ( {id} ) => {
         const mounth = new Date().getMonth()
         const year = new Date().getFullYear()
         
-        var date = new Date();
-        var now_utc = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
+        let date = new Date();
+        let now_utc = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
         date.getUTCDate(), date.getUTCHours() + 5,
         date.getUTCMinutes(), date.getUTCSeconds()))
         const minut = (now_utc.getMinutes()).toString().length < 2 ? '0'+now_utc.getMinutes(): now_utc.getMinutes()
         const gethours = (new Date().getHours() * 60) + (new Date().getMinutes())
         const hours = (now_utc.getUTCHours()) + ':' + minut
         const resultdate = `${year}-${mounth == 12 ? mounth : mounth + 1 }-${today.toString().length == 1 ? '0'+today : today}`
-        const checktime = await uniqRow(`select * from settime where worker_id = $1 and to_char(settime.time_date, 'YYYY-MM-DD') = $2`, id, resultdate)
+        console.log(resultdate);
+
+
+        const checktime = await uniqRow(`select * from settime where worker_id = $1 and split_part(time_date::TEXT,'T', 1) = $2`, id, resultdate)
+        console.log(now_utc);
+        console.log(checktime.rows);
+        
         if(checktime.rows.length){
             const asd = checktime.rows.find(el => el.time_check.length > 0)
             if((gethours - asd.time_check) <= 15){
@@ -121,6 +127,9 @@ const workerPostTimeModel = async ( {id} ) => {
             }
         } else {
             if (typeof id == 'number') {
+                let now_utc = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
+                date.getUTCDate(), date.getUTCHours(),
+                date.getUTCMinutes(), date.getUTCSeconds()))
                 await uniqRow(`insert into settime (time_get,time_check,time_date,worker_id) values ($1, $2, $3,$4)`,hours,gethours,now_utc,id)
                 const worker = await uniqRow('select * from workers where worker_id = $1', id)
                 return {

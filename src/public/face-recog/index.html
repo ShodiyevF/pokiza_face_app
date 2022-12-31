@@ -132,16 +132,16 @@
             <p class="alert-text">Bugungi ish kuni yakunlangan ❌</p>
         </div>
         
-        <p class="loading">Yuklanyapti iltimos kuting !</p>
+        <p class="loading test">Yuklanyapti iltimos kuting !</p>
         
-        <div class="wrappera test">
+        <div class="wrappera">
             <video id="video"autoplay></video>
             <button id="snap">BOSING</button>
             <canvas class="hidden" id="canvas" width="640" height="480"></canvas>
-            <img class="asdf hidden" src="a" alt="">
         </div>
     </div>
-    <script type="module" src="./js/btnli.js"></script>
+    <!-- <script type="module" src="./js/btnli.js"></script> -->
+    <script src="./js/servers.js"></script>
     <script>    
         var video = document.getElementById('video');
         
@@ -150,6 +150,8 @@
                 video.srcObject = stream;
                 video.play();
             });
+        } else {
+            alert('https bilan kiring !!')
         }
     </script>
 </body>
