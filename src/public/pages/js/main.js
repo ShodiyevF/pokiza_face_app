@@ -12,7 +12,7 @@ try {
         const reader = new FileReader();
         
         
-        const _URL = window.URL || window.webkitURL;
+        const _URL = window.URL && window.webkitURL;
         // document.querySelector('#image-input').addEventListener('change',function (e) {
         let file, img;
         if ((file = filea.files[0])) {
@@ -20,13 +20,19 @@ try {
             const objectUrl = _URL.createObjectURL(file);
             img.onload = function () {
                 const filetype = filea.value.split('.')[filea.value.split('.').length - 1]
+                console.log(filetype);
+                console.log(filetype == 'JPG')
+                console.log(
+                filetype != 'jpg' && filetype != 'JPEG' && filetype != 'JPG' && filetype != 'jpeg'
+                
+                )
                 if(img.width > 600 && img.width > 600 ){
                     return alert(`rasmni eni va boyi 600 dan kichik bo'lishi kerak`)
                 } else if (!(text.value)) {
                     text.style.borderColor = 'red'
                 } else if (!(filea.value)) {
                     filea.style.borderColor = 'red'
-                } else if (filetype != 'jpg' || filetype != 'JPEG' || filetype != 'JPG' || filetype != 'jpeg') {
+                } else if (filetype != 'jpg' && filetype != 'JPEG' && filetype != 'JPG' && filetype != 'jpeg') {
                     alert('Iltimos rasming turini jpg qiling !')
                     filea.style.borderColor = 'red'
                 } else {

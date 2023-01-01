@@ -74,7 +74,7 @@ const excelExportModel = async ( {from, to, id} ) => {
         
         const workers = []
         const query = `
-        select * from workers where worker_id = $1 limit 1
+        select * from workers where worker_id = $1 and worker_delete = 0 limit 1
         `
         for (const i of id) {
             const a = await uniqRow(query, +(i.id))
@@ -131,7 +131,7 @@ const excelExportModel = async ( {from, to, id} ) => {
             split_part(st.time_date::TEXT,'T', 1) as time_date
             from settime as st
             inner join workers as w on w.worker_id = st.worker_id
-            where w.worker_id = $1 
+            where w.worker_id = $1 and w.worker_delete = 0
             `
             // and split_part(w.worker_getdate::TEXT,'T', 1) >= $2 and split_part(w.worker_getdate::TEXT,'T', 1) <= $3;
             const fro = `${from.split('-')[2]}-${(from.split('-')[1]).length == 1 ? '0'+from.split('-')[1] : from.split('-')[1]}-${(from.split('-')[0]).length == 1 ? '0'+from.split('-')[0] : from.split('-')[0]}`

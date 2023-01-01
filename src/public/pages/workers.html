@@ -93,11 +93,13 @@
         .all{
             margin-right: 20px;
         }
+        
     </style>
 </head>
 <body>
     
     <div class="container">
+        <a class="bosh" style="text-decoration: none; font-size: 18px; padding: 20px; border: 2px solid black; padding-top: 15px; margin-bottom: 20px; display: block; text-align: center;" href="./../index.html">Bosh menyu</a>
         <div style="margin-top: 20px; display: flex;">
             <input class="from" type="text" style="width: 200px; margin-right: 20px;" placeholder="qachondan misol: 01-12-2022">
             <input class="to" type="text" style="width: 230px; margin-right: 20px;" placeholder="qachongacha misol: 04-12-2022">
@@ -198,7 +200,10 @@
                             })
                         })
                         const data = await res.json()
-                        console.log(data);
+                        if(data.status == 200){
+                            alert('Ochirildi')
+                            location.reload()
+                        }
                     }
                 }
                 const check = arr.filter(el => el.dataset.active == 1)
@@ -210,7 +215,9 @@
         
         function namesa (i){
             i.ondblclick = (e) => {
+                console.log(e);
                 e.target.classList[0] ? e.target.classList.remove('bg') : e.target.classList.add('bg')
+                console.log(e.target.dataset.active);
                 if (e.target.dataset.active == 0) {
                     e.target.dataset.active = 1
                 } else {
@@ -224,16 +231,17 @@
         function allcheck (e){
             buttona.onclick = (a) => {
                 for (const i of e) {
-                    i.dataset.active = 1
-                }
-                for (const i of e) {
-                    if (i.dataset.active == 1) {
+                    if(aa) {
                         i.dataset.active = 0
-                    } else {
-                        i.dataset.active = 1
+                        i.classList.remove('bg')
+                        aa = false
                     }
                     i.classList[0] ? i.classList.remove('bg') : i.classList.add('bg')
-                    
+                    if (i.dataset.active == 0) {
+                        i.dataset.active = 1
+                    } else {
+                        i.dataset.active = 0
+                    }
                 }
             }
         }
@@ -311,6 +319,7 @@
             console.log(!test1 || !test2);
             console.log(!test2);
             console.log(!test1);
+            console.log(results);
             if (!(results.length)) {
                 alert('bitta ishchini tanlang !')
             } else if (!(input1.value) || !(input2.value) || !test1 || !test2) {
