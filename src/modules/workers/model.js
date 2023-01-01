@@ -254,6 +254,29 @@ const workerGetBranchModel = async ( {worker_id, branch_id} ) => {
     }
 }
 
+const workerDeleteModel = async ( {worker_id} ) => {
+    try {
+        const checkWorker = await uniqRow('select * from workers where worker_id = $1', worker_id)
+        if(checkWorker.rows.length){
+            // if(checkWorker.rows[0].worker_delete == )
+            const isdelete = checkWorker.rows[0].worker_delete == 0 ? 1 : 0
+            console.log(isdelete);
+            await uniqRow('update workers set worker_delete = $1 where worker_id = $2', isdelete, worker_id)
+            return {
+                status: 200,
+                message: 'worker update'
+            }
+        } else {
+            return {
+                status: 404,
+                message: 'worker not found !'
+            }
+        }
+    } catch (error) {
+        console.log(error.message, 'workerDeleteModel')
+    }
+}
+
 module.exports = {
     workerPostModel,
     workerGetTimesModel,
@@ -264,5 +287,6 @@ module.exports = {
     workerPutImageModel,
     workerPostImageModel,
     workerSetBranchModel,
-    workerGetBranchModel
+    workerGetBranchModel,
+    workerDeleteModel
 }

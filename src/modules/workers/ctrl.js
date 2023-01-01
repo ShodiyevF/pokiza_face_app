@@ -1,4 +1,4 @@
-const { workerPostModel, workersGetModel, workersFilterModel, workerPostTimeModel, workerGetTimesModel, workerPutFishModel, workerPutImageModel, workerPostImageModel, workerSetBranchModel, workerGetBranchModel } = require("./model")
+const { workerPostModel, workersGetModel, workersFilterModel, workerPostTimeModel, workerGetTimesModel, workerPutFishModel, workerPutImageModel, workerPostImageModel, workerSetBranchModel, workerGetBranchModel, workerDeleteModel } = require("./model")
 const path = require('path')
 
 const workerPostCtrl = async (req, res) => {
@@ -173,12 +173,21 @@ const workerSetBranchCtrl = async (req, res) => {
     }
 }
 
-const workerGetBranchCtlr = async (req, res) => {
+const workerGetBranchCtrl = async (req, res) => {
     try {
         const all = await workerGetBranchModel(req.body)
         res.json(all)
     } catch (error) {
-        console.log(error.message, 'workerGetBranchCtlr')
+        console.log(error.message, 'workerGetBranchCtrl')
+    }
+}
+
+const workerDeleteCtrl = async (req, res) => {
+    try {
+        const all = await workerDeleteModel(req.body)
+        res.json(all)
+    } catch (error) {
+        console.log(error.message, 'workerDeleteCtrl')
     }
 }
 
@@ -194,5 +203,6 @@ module.exports = {
     workerPutImageCtrl,
     workerPostImageCtrl,
     workerSetBranchCtrl,
-    workerGetBranchCtlr
+    workerGetBranchCtrl,
+    workerDeleteCtrl
 }

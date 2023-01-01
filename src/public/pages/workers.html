@@ -17,7 +17,7 @@
         *{
             user-select: none;
         }
-        .bg{
+        .bg.bg.bg{
             background-color: rgba(70, 143, 162, 50%);
         }
         body{
@@ -41,6 +41,9 @@
         }
         .test{
             display: none;
+        }
+        .delete{
+            background-color: red;
         }
         .modal {
             display: none; /* Hidden by default */
@@ -100,7 +103,7 @@
             <input class="to" type="text" style="width: 230px; margin-right: 20px;" placeholder="qachongacha misol: 04-12-2022">
             
             <button class="all">Hammasini tanlash</button>
-
+            
             <button class="deletebtn">O'chirish</button>
             
             <button class="export" style="margin-left: auto;">EXCEL ga export qilish</button>
@@ -137,7 +140,7 @@
     </div>
     
     <script>
-
+        
         
         
         const das = document.querySelector('.header-title_sana')
@@ -156,7 +159,7 @@
         }
         
         var modal = document.getElementById("myModal");
-
+        
         var span = document.getElementsByClassName("close")[0]
         
         span.onclick = function() {
@@ -177,6 +180,33 @@
         const input2 = document.querySelector('.to')
         const a = document.querySelector('.one')
         
+        
+        function deletefunction(i) {
+            const deletebtn = document.querySelector('.deletebtn')
+            deletebtn.ondblclick = async () => {
+                const arr = []
+                for (const j of i) {
+                    arr.push(j)
+                    if (j.dataset.active == 1) {
+                        const res = await fetch('/worker/delete', {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                worker_id: +(j.dataset.id)
+                            })
+                        })
+                        const data = await res.json()
+                        console.log(data);
+                    }
+                }
+                const check = arr.filter(el => el.dataset.active == 1)
+                if(!(check.length)){
+                    alert('Hodim tanlang !')
+                }
+            }
+        }
         
         function namesa (i){
             i.ondblclick = (e) => {
@@ -223,6 +253,7 @@
                 spanid.id = 'myBtn'
                 spanid.dataset.id = i.worker_id
                 const spanname = document.createElement('span')
+                i.worker_delete == 1 ? spanname.classList.add('delete') : spanname.classList.remove('delete')
                 spanname.dataset.id = i.worker_id
                 spanname.dataset.active = 0
                 const spanbranch = document.createElement('span')
@@ -246,6 +277,7 @@
             const names = document.querySelectorAll('[data-active]')
             
             allcheck(names)
+            deletefunction(names)
             for (const i of names) {
                 namesa(i)
             }
