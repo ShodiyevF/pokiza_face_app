@@ -71,7 +71,6 @@ setTimeout(async () => {
 
 const excelExportModel = async ( {from, to, id} ) => {
     try {
-        console.log(days(from, to))
         
         const workers = []
         const query = `
@@ -87,7 +86,11 @@ const excelExportModel = async ( {from, to, id} ) => {
         }
         
         var Excel = require('exceljs');
+        
         var workbook = new Excel.Workbook();
+        const workbooka = new Excel.stream.xlsx.WorkbookWriter({
+            filename: 'demo_hidden_columns_bug.xlsx', useStyles: true
+        })
         
         workbook.creator = 'Fayzulloh Shodiyev';
         workbook.lastModifiedBy = '';
@@ -98,7 +101,8 @@ const excelExportModel = async ( {from, to, id} ) => {
         var sheet = workbook.addWorksheet('LIST 1');
         const sheetarray = []
         
-        for (let i = 1; i <= days(from, to); i++) {
+        console.log(days(from, to));
+        for (let i = 0; i <= days(from, to); i++) {
             sheetarray.push({
                 header: `Kelish`,
                 key: `income${i}`
@@ -113,56 +117,93 @@ const excelExportModel = async ( {from, to, id} ) => {
                 width: 15, style: { numFmt: 'General' }
             })
         }
+        console.log(sheetarray);
         
         await sheetarray.unshift({ header: 'FIO', key: 'fio', width: 20, style: { numFmt: 'General' }})
         await sheetarray.unshift({ header: 'ID', key: 'id'})
         await sheetarray.push({ header: 'Oylik Vaqti', key: 'allresult', width: 11, style: { numFmt: 'General' }})
         sheet.columns = sheetarray
-        
-        
-        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-        let month = months[new Date().getMonth()];
-        console.log(month);
         const a = []
         for (const i of workers) {
             const query = `
             select
             *,
-            split_part(w.worker_getdate::TEXT,'T', 1) as tochar
+            split_part(w.worker_getdate::TEXT,'T', 1) as tochar,
+            split_part(st.time_date::TEXT,'T', 1) as time_date
             from settime as st
             inner join workers as w on w.worker_id = st.worker_id
-            where w.worker_id = $1 and split_part(w.worker_getdate::TEXT,'T', 1) > $2 and split_part(w.worker_getdate::TEXT,'T', 1) < $3;
+            where w.worker_id = $1 
             `
-            // split_part(st.time_date::TEXT,'T', 1) >= $1 and split_part(st.time_date::TEXT,'T', 1) < $2 and 
-            console.log(from, to);
-            console.log(`from.split('-')[0]`);
-            const workertimes = await uniqRow(query, i.worker_id, from, to)
-            const getMonth = workertimes.rows.filter(el => el.time_date.toString().includes(`${month[0]}${month[1]}${month[2]}`))
+            // and split_part(w.worker_getdate::TEXT,'T', 1) >= $2 and split_part(w.worker_getdate::TEXT,'T', 1) <= $3;
+            const fro = `${from.split('-')[2]}-${from.split('-')[1]}-${(from.split('-')[0]).length == 1 ? '0'+from.split('-')[0] : from.split('-')[0]}`
+            const too = `${to.split('-')[2]}-${to.split('-')[1]}-${(to.split('-')[0]).length == 1 ? '0'+to.split('-')[0] : to.split('-')[0]}`
+            // console.log(fro)
+            // console.log(too)
+            const workertimes = await uniqRow(query, i.worker_id)
+            const getMonth = workertimes.rows.filter(el => el.time_date >= fro && el.time_date <= too)
             const worker = {
                 id: i.worker_id,
                 fio: i.worker_fish,
             }
             let count = 0
             let fullresult = 0
-            for (const i of getMonth) {
-                const asd = i.time_date.toString().split(' ')[2]
-                const now = new Date();
-                count += 1
-                worker[`income${count}`] = i.time_get;
-                worker[`care${count}`] = (isNaN(i.time_end) ? i.time_end : '');
-                const time = i.time_end ? calculateTime(i.time_get, i.time_end) : '0'
-                worker[`time${count}`] = time;
-                const fulltime = await (time != '0' ? +(time.split(':')[0] * 60) + +(time.split(':')[1]) : 'none')
-                await (fulltime != 'none' ? fullresult += fulltime : fullresult)
+            function dateRange(startDate, endDate, steps = 1) {
+                const dateArray = [];
+                let currentDate = new Date(startDate);
                 
+                while (currentDate <= new Date(endDate)) {
+                    dateArray.push(new Date(currentDate));
+                    currentDate.setUTCDate(currentDate.getUTCDate() + steps);
+                }
+
+                const result = []
+                for (const i of dateArray) {
+                    result.push(i.toISOString().split("T")[0])
+                }
+                return result;
             }
+            
+            const dates = dateRange(fro, too);
+            
+            
+            let counter = 0
+            for (const i of dates) {
+
+                const a = getMonth.find(el => el.time_date == i)
+                if(!a){
+                    worker[`income${counter}`] = '';
+                    worker[`care${counter}`] = ''
+                    worker[`time${counter}`] = ''
+                } else {
+                    worker[`income${counter}`] = a.time_get;
+                    worker[`care${counter}`] = (isNaN(a.time_end) ? a.time_end : '');
+                    const time = a.time_end ? calculateTime(a.time_get, a.time_end) : '0'
+                    worker[`time${counter}`] = time;
+                    const fulltime = await (time != '0' ? +(time.split(':')[0] * 60) + +(time.split(':')[1]) : 'none')
+                    await (fulltime != 'none' ? fullresult += fulltime : fullresult)
+                }
+                counter += 1
+
+
+            }
+            
+            // for (const i of getMonth) {
+            //     console.log(i);
+            //     worker[`income${count}`] = i.time_get;
+            //     worker[`care${count}`] = (isNaN(i.time_end) ? i.time_end : '');
+            //     const time = i.time_end ? calculateTime(i.time_get, i.time_end) : '0'
+            //     worker[`time${count}`] = time;
+            //     const fulltime = await (time != '0' ? +(time.split(':')[0] * 60) + +(time.split(':')[1]) : 'none')
+            //     await (fulltime != 'none' ? fullresult += fulltime : fullresult)
+            // }
+            
             worker[`allresult`] = timeConvert(fullresult);
             a.push(worker)
         }
-        
         for (const i of a) {
-            sheet.addRow(i)   
+            sheet.addRow(i)
         }
+        console.log(a)
         
         workbook.xlsx.writeFile("Xisobot.xls")
     } catch (error) {
@@ -187,7 +228,6 @@ const faceRecognitionModel = async (file) => {
         const results = resizedDetections.map((d) => {
             return faceMatcher.findBestMatch(d.descriptor)
         })
-        console.log(results);
         return results
     } catch (error) {
         console.log(error, 'faceRecognitionModel')
