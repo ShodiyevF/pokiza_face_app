@@ -1,5 +1,5 @@
 const path = require('path')
-const moment = require('moment')
+const fs = require('fs')
 const { uniqRow } = require("../../lib/pg")
 const { calculateTime } = require('../../lib/calctime')
 
@@ -18,7 +18,7 @@ const workerGetTimesModel = async () => {
         select
         st.time_get,
         st.time_end,
-        TO_CHAR(st.time_date, 'DD-MM-YYYY') as date,
+        split_part(st.time_date::TEXT,'T', 1) as date,
         st.time_result,
         w.worker_id,
         w.worker_fish
@@ -61,6 +61,41 @@ const workerPutFishModel = async ({id, fish}) => {
     }
 }
 
+const workerPutImageModel = async ( id, file ) => {
+    try {
+        const filepath = path.join(__dirname, '../', '../', '../', '../', 'face_images/')
+        fs.readdir(filepath, (err, files) => {
+            if(err){
+                return {
+                    status: 400,
+                    message: 'error on readdir !!!'
+                }
+            } else {
+                const find = id+'.jpg'
+                const finded = files.find(el => el == find)
+                if (finded) {
+                    const filepath = path.join(__dirname, '../', '../', '../', '../', 'face_images/', find)
+                    file.mv(filepath, (err) => {
+                        if (err) {
+                            return {
+                                status: 400,
+                                message: 'error on filemove !!!'
+                            }
+                        } else {
+                            return {
+                                status: 200,
+                                message: 'worker img updated'
+                            }
+                        }
+                    })
+                }
+            }
+        })
+    } catch (error) {
+        console.log(error.message, 'workerPutImageModel')
+    }
+}
+
 const workersFilterModel = async ({from, to} ) => {
     try {
         const query = `
@@ -81,7 +116,9 @@ const workersFilterModel = async ({from, to} ) => {
 const workerPostTimeModel = async ( {id} ) => {
     try {
         const today = new Date().getDate()
+        const fullToday = today == 12 ? today : ((1+today).toString().length > 1 ? today : '0'+today)
         const mounth = new Date().getMonth()
+        const fullMounth = mounth == 12 ? mounth : ((1+mounth).toString().length > 1 ? mounth : '0'+(1+mounth))
         const year = new Date().getFullYear()
         
         let date = new Date();
@@ -91,13 +128,9 @@ const workerPostTimeModel = async ( {id} ) => {
         const minut = (now_utc.getMinutes()).toString().length < 2 ? '0'+now_utc.getMinutes(): now_utc.getMinutes()
         const gethours = (new Date().getHours() * 60) + (new Date().getMinutes())
         const hours = (now_utc.getUTCHours()) + ':' + minut
-        const resultdate = `${year}-${mounth == 12 ? mounth : mounth + 1 }-${today.toString().length == 1 ? '0'+today : today}`
-        console.log(resultdate);
-
-
+        const resultdate = `${year}-${fullMounth}-${today.toString().length == 1 ? '0'+today : today}`
+        
         const checktime = await uniqRow(`select * from settime where worker_id = $1 and split_part(time_date::TEXT,'T', 1) = $2`, id, resultdate)
-        console.log(now_utc);
-        console.log(checktime.rows);
         
         if(checktime.rows.length){
             const asd = checktime.rows.find(el => el.time_check.length > 0)
@@ -150,5 +183,6 @@ module.exports = {
     workersGetModel,
     workersFilterModel,
     workerPostTimeModel,
-    workerPutFishModel
+    workerPutFishModel,
+    workerPutImageModel
 }

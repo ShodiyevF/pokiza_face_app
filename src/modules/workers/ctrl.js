@@ -1,4 +1,4 @@
-const { workerPostModel, workersGetModel, workersFilterModel, workerPostTimeModel, workerGetTimesModel, workerPutFishModel } = require("./model")
+const { workerPostModel, workersGetModel, workersFilterModel, workerPostTimeModel, workerGetTimesModel, workerPutFishModel, workerPutImageModel } = require("./model")
 const path = require('path')
 
 const workerPostCtrl = async (req, res) => {
@@ -68,6 +68,23 @@ const workerPutFishCtrl = async (req, res) => {
     }
 }
 
+const workerPutImageCtrl = async (req, res) => {
+    try {
+        if(req.files.file && req.body.id){
+            const model = await workerPutImageModel(req.body.id, req.files.file)
+            console.log(model);
+            return res.json(model)
+        } else {
+            return res.json({
+                status: 400,
+                message: 'error on keys'
+            })
+        }
+    } catch (error) {
+        console.log(error.message, 'workerPutImageCtrl')
+    }
+}
+
 const workersFilterCtrl = async (req, res) => {
     try {
         if(req.body.from && req.body.to){
@@ -131,5 +148,6 @@ module.exports = {
     workerPutFishCtrl,
     workersFilterCtrl,
     workerGetImgCtrl,
-    workerPostTimeCtrl
+    workerPostTimeCtrl,
+    workerPutImageCtrl
 }

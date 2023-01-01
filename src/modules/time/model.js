@@ -21,28 +21,41 @@ async function image(img) {
     casted.dispose();
     return result;
 }
+
+function days(date1, date2) {
+    date1 = date1.split('-');
+    date2 = date2.split('-');
+    date1 = new Date(date1[2], date1[1],date1[0]);
+    date2 = new Date(date2[2], date2[1],date2[0]);
+    date1_unixtime = parseInt(date1.getTime() / 1000);
+    date2_unixtime = parseInt(date2.getTime() / 1000);
+    var timeDifference = date2_unixtime - date1_unixtime;
+    var timeDifferenceInHours = timeDifference / 60 / 60;
+    var timeDifferenceInDays = timeDifferenceInHours  / 24;
+    return timeDifferenceInDays
+}
+
 async function loadLabeledImages() {
-    // const labels = fs.readdirSync(path.join(__dirname, '../','../','../','../','face_images'))
-    // for (const i of labels) {
-    //     console.log(+i);
-    // }
     const labels = await uniqRow('select * from workers order by worker_id asc')
-    
-    let counter = 1
     return Promise.all(labels.rows.map(async label => {
         const descriptions = []
         console.log((+label.worker_id))
-        // const 
         const asd = await image(path.join(__dirname, '../','../','../','../','face_images/', label.worker_id.toString()+'.jpg'))
-        // const readed = fs.readFileSync(path.join(__dirname, '../','../','../','../','face_images/', label.worker_id.toString(), `/${label.worker_fish.split(' ')[0]}.jpg`))
-        // const canvasImg = await canvas.loadImage(readed);
-        // const out = await faceapi.createCanvasFromMedia(canvasImg);
         const detections = await faceapi.detectSingleFace(asd).withFaceLandmarks().withFaceDescriptor()
-
         descriptions.push(detections.descriptor)
         return new faceapi.LabeledFaceDescriptors((label.worker_id).toString(), descriptions)
     }))
 }
+
+const arr = []
+setTimeout(async () => {
+    const res = await loadLabeledImages()
+    for (const i of res) {
+        arr.push(i)
+    }
+    console.log(arr)
+}, 5000)
+
 
 // (async () => {
 //     setTimeout(async () => {
@@ -58,6 +71,8 @@ async function loadLabeledImages() {
 
 const excelExportModel = async ( {from, to, id} ) => {
     try {
+        console.log(days(from, to))
+        
         const workers = []
         const query = `
         select * from workers where worker_id = $1 limit 1
@@ -73,9 +88,6 @@ const excelExportModel = async ( {from, to, id} ) => {
         
         var Excel = require('exceljs');
         var workbook = new Excel.Workbook();
-        const workbooka = new Excel.stream.xlsx.WorkbookWriter({
-            filename: 'demo_hidden_columns_bug.xlsx', useStyles: true
-        })
         
         workbook.creator = 'Fayzulloh Shodiyev';
         workbook.lastModifiedBy = '';
@@ -86,7 +98,7 @@ const excelExportModel = async ( {from, to, id} ) => {
         var sheet = workbook.addWorksheet('LIST 1');
         const sheetarray = []
         
-        for (let i = 1; i <= daysInCurrentMonth; i++) {
+        for (let i = 1; i <= days(from, to); i++) {
             sheetarray.push({
                 header: `Kelish`,
                 key: `income${i}`
@@ -100,7 +112,7 @@ const excelExportModel = async ( {from, to, id} ) => {
                 key: `time${i}`,
                 width: 15, style: { numFmt: 'General' }
             })
-        }        
+        }
         
         await sheetarray.unshift({ header: 'FIO', key: 'fio', width: 20, style: { numFmt: 'General' }})
         await sheetarray.unshift({ header: 'ID', key: 'id'})
@@ -110,19 +122,7 @@ const excelExportModel = async ( {from, to, id} ) => {
         
         const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
         let month = months[new Date().getMonth()];
-        
-        function getAllDaysInMonth(year, month) {
-            const date = new Date(year, month, 1);
-            
-            const dates = [];
-            
-            while (date.getMonth() === month) {
-                dates.push(date.getDate());
-                date.setDate(date.getDate() + 1);
-            }
-            
-            return dates;
-        }
+        console.log(month);
         const a = []
         for (const i of workers) {
             const query = `
@@ -131,10 +131,12 @@ const excelExportModel = async ( {from, to, id} ) => {
             split_part(w.worker_getdate::TEXT,'T', 1) as tochar
             from settime as st
             inner join workers as w on w.worker_id = st.worker_id
-            where w.worker_id = $1;
+            where w.worker_id = $1 and split_part(w.worker_getdate::TEXT,'T', 1) > $2 and split_part(w.worker_getdate::TEXT,'T', 1) < $3;
             `
             // split_part(st.time_date::TEXT,'T', 1) >= $1 and split_part(st.time_date::TEXT,'T', 1) < $2 and 
-            const workertimes = await uniqRow(query, i.worker_id)
+            console.log(from, to);
+            console.log(`from.split('-')[0]`);
+            const workertimes = await uniqRow(query, i.worker_id, from, to)
             const getMonth = workertimes.rows.filter(el => el.time_date.toString().includes(`${month[0]}${month[1]}${month[2]}`))
             const worker = {
                 id: i.worker_id,
@@ -145,7 +147,6 @@ const excelExportModel = async ( {from, to, id} ) => {
             for (const i of getMonth) {
                 const asd = i.time_date.toString().split(' ')[2]
                 const now = new Date();
-                const fasd = getAllDaysInMonth(now.getFullYear(), now.getMonth())
                 count += 1
                 worker[`income${count}`] = i.time_get;
                 worker[`care${count}`] = (isNaN(i.time_end) ? i.time_end : '');
@@ -171,7 +172,7 @@ const excelExportModel = async ( {from, to, id} ) => {
 
 const faceRecognitionModel = async (file) => {
     try {
-        const labeledDescriptors = await loadLabeledImages()
+        const labeledDescriptors = arr
         const fullresults = labeledDescriptors.filter(el => typeof el !== 'undefined')
         const faceMatcher = new faceapi.FaceMatcher(fullresults, 0.7)
         // const das = await faceapi.fetchImage(file.data)
