@@ -39,7 +39,6 @@ async function loadLabeledImages() {
     const labels = await uniqRow('select * from workers order by worker_id asc')
     return Promise.all(labels.rows.map(async label => {
         const descriptions = []
-        console.log((+label.worker_id))
         const asd = await image(path.join(__dirname, '../','../','../','../','face_images/', label.worker_id.toString()+'.jpg'))
         const detections = await faceapi.detectSingleFace(asd).withFaceLandmarks().withFaceDescriptor()
         descriptions.push(detections.descriptor)
@@ -50,11 +49,26 @@ async function loadLabeledImages() {
 const arr = []
 setTimeout(async () => {
     const res = await loadLabeledImages()
+    const descriptors = await uniqRow('select * from descriptor')
     for (const i of res) {
+        // const obja = JSON.parse(i.descriptor_main)
+        // const toarr = new Float32Array(obja.descriptors[0])
+        // console.log(toarr);
+        
+        // // console.log(eval(i.descriptor_main.descriptors));
+        // // console.log(obj);
+        // const obj = {
+        //     _label: obja.label,
+        //     _descriptors: [toarr]
+        // }
+        // obj.real_property = 'hello';
+        // Object.defineProperty(obj, 'meta_property', {value: 'some meta value'});
+        
+        // arr.push()
         arr.push(i)
     }
     console.log(arr)
-}, 5000)
+}, 5000);
 
 
 // (async () => {
@@ -62,8 +76,14 @@ setTimeout(async () => {
 //         const a = await loadLabeledImages()
 //         for (const i of a) {
 //             // console.log(i);
-//             labeledImages.push(i)
-//             // await uniqRow('insert into')
+//             const descriptors = await uniqRow('select * from descriptor where worker_id = $1', i._label)
+//             // console.log(descriptors.rows);
+//             if (descriptors.rows.length) {
+//                 console.log('bor ekanku')
+//             } else {
+//                 await uniqRow('insert into descriptor (descriptor_main, worker_id) values ($1, $2)', JSON.stringify(i), i._label)
+//                 console.log('Yangi qoshildi ')
+//             }
 //         }
 //     }, 5000)
 // })()
@@ -204,6 +224,7 @@ const excelExportModel = async ( {from, to, id} ) => {
 const faceRecognitionModel = async (file) => {
     try {
         const labeledDescriptors = arr
+        // console.log(labeledDescriptors);
         const fullresults = labeledDescriptors.filter(el => typeof el !== 'undefined')
         const faceMatcher = new faceapi.FaceMatcher(fullresults, 0.7)
         // const das = await faceapi.fetchImage(file.data)

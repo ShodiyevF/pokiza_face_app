@@ -24,3 +24,17 @@ create table branch(
     branch_id serial primary key,
     branch_name varchar(32) not null
 );
+
+drop table if exists branch cascade;
+create table branch(
+    branch_id serial primary key,
+    branch_name varchar(32) not null
+);
+
+
+drop table if exists descriptor cascade;
+create table descriptor(
+    descriptor_id serial primary key,
+    descriptor_main text not null,
+    worker_id int references workers(worker_id)
+);
