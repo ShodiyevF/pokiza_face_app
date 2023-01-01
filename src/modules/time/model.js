@@ -117,7 +117,6 @@ const excelExportModel = async ( {from, to, id} ) => {
                 width: 15, style: { numFmt: 'General' }
             })
         }
-        console.log(sheetarray);
         
         await sheetarray.unshift({ header: 'FIO', key: 'fio', width: 20, style: { numFmt: 'General' }})
         await sheetarray.unshift({ header: 'ID', key: 'id'})
@@ -135,12 +134,15 @@ const excelExportModel = async ( {from, to, id} ) => {
             where w.worker_id = $1 
             `
             // and split_part(w.worker_getdate::TEXT,'T', 1) >= $2 and split_part(w.worker_getdate::TEXT,'T', 1) <= $3;
-            const fro = `${from.split('-')[2]}-${from.split('-')[1]}-${(from.split('-')[0]).length == 1 ? '0'+from.split('-')[0] : from.split('-')[0]}`
-            const too = `${to.split('-')[2]}-${to.split('-')[1]}-${(to.split('-')[0]).length == 1 ? '0'+to.split('-')[0] : to.split('-')[0]}`
-            // console.log(fro)
-            // console.log(too)
+            const fro = `${from.split('-')[2]}-${(from.split('-')[1]).length == 1 ? '0'+from.split('-')[1] : from.split('-')[1]}-${(from.split('-')[0]).length == 1 ? '0'+from.split('-')[0] : from.split('-')[0]}`
+            const too = `${to.split('-')[2]}-${(to.split('-')[1]).length == 1 ? '0'+to.split('-')[1] : to.split('-')[1]}-${(to.split('-')[0]).length == 1 ? '0'+to.split('-')[0] : to.split('-')[0]}`
             const workertimes = await uniqRow(query, i.worker_id)
+            console.log(fro);
+            console.log(too);
+            const getMontha = workertimes.rows.filter(el => el.time_date)
+            console.log(getMontha);
             const getMonth = workertimes.rows.filter(el => el.time_date >= fro && el.time_date <= too)
+            console.log(getMonth);
             const worker = {
                 id: i.worker_id,
                 fio: i.worker_fish,
@@ -183,19 +185,7 @@ const excelExportModel = async ( {from, to, id} ) => {
                     await (fulltime != 'none' ? fullresult += fulltime : fullresult)
                 }
                 counter += 1
-
-
             }
-            
-            // for (const i of getMonth) {
-            //     console.log(i);
-            //     worker[`income${count}`] = i.time_get;
-            //     worker[`care${count}`] = (isNaN(i.time_end) ? i.time_end : '');
-            //     const time = i.time_end ? calculateTime(i.time_get, i.time_end) : '0'
-            //     worker[`time${count}`] = time;
-            //     const fulltime = await (time != '0' ? +(time.split(':')[0] * 60) + +(time.split(':')[1]) : 'none')
-            //     await (fulltime != 'none' ? fullresult += fulltime : fullresult)
-            // }
             
             worker[`allresult`] = timeConvert(fullresult);
             a.push(worker)
@@ -203,7 +193,7 @@ const excelExportModel = async ( {from, to, id} ) => {
         for (const i of a) {
             sheet.addRow(i)
         }
-        console.log(a)
+        // console.log(a)
         
         workbook.xlsx.writeFile("Xisobot.xls")
     } catch (error) {
