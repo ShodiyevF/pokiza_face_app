@@ -18,3 +18,9 @@ create table settime(
     time_result varchar(6),
     worker_id int not null references workers(worker_id)
 );
+
+drop table if exists branch cascade;
+create table branch(
+    branch_id serial primary key,
+    branch_name varchar(32) not null
+);

@@ -17,6 +17,9 @@
     color: #349beb;
 }
 .nav{
+    padding: 0;
+    margin: 0;
+    margin-top: 10px;
     list-style: none;
 }
 

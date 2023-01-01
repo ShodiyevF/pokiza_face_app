@@ -87,6 +87,9 @@
             white-space: nowrap; 
             width: 1px;
         }
+        .all{
+            margin-right: 20px;
+        }
     </style>
 </head>
 <body>
@@ -95,9 +98,10 @@
         <div style="margin-top: 20px; display: flex;">
             <input class="from" type="text" style="width: 200px; margin-right: 20px;" placeholder="qachondan misol: 01-12-2022">
             <input class="to" type="text" style="width: 230px; margin-right: 20px;" placeholder="qachongacha misol: 04-12-2022">
-            <button class="button hidden" style="margin-right: 70px;" type="button">Jo'natish</button>
             
             <button class="all">Hammasini tanlash</button>
+
+            <button class="deletebtn">O'chirish</button>
             
             <button class="export" style="margin-left: auto;">EXCEL ga export qilish</button>
         </div>
@@ -105,12 +109,15 @@
         <div class="header-wrapper">
             <h2 class="header-title">Id</h2>
             <h2 class="header-title">F.I.Sh</h2>
+            <h2 class="header-title header-title_sana">Korhona</h2>
             <h2 class="header-title header-title_sana">Sana</h2>
         </div> 
         <div class="nav-wrapper">    
             <ul class="nav one">
             </ul>
             <ul class="nav two">
+            </ul>
+            <ul class="nav four">
             </ul>
             <ul class="nav three">
             </ul>
@@ -130,6 +137,8 @@
     </div>
     
     <script>
+
+        
         
         const das = document.querySelector('.header-title_sana')
         das.onclick = async (e) => {
@@ -202,9 +211,12 @@
         (async () => {
             const res = await fetch('/workerall/1')
             const data = await res.json()
+            
             for (const i of data.all) {
+                console.log(i);
                 const liid = document.createElement('li')
                 const liname = document.createElement('li')
+                const libranch = document.createElement('li')
                 const lidate = document.createElement('li')
                 
                 const spanid = document.createElement('span')
@@ -213,18 +225,22 @@
                 const spanname = document.createElement('span')
                 spanname.dataset.id = i.worker_id
                 spanname.dataset.active = 0
+                const spanbranch = document.createElement('span')
                 const spandate = document.createElement('span')
                 
                 spanid.textContent = i.worker_id
                 spanname.textContent = i.worker_fish
+                spanbranch.textContent = i.branch_name ? i.branch_name : '‎'
                 spandate.textContent = i.worker_getdate.split('T')[0]
                 
                 liid.appendChild(spanid)
                 liname.appendChild(spanname)
+                libranch.appendChild(spanbranch)
                 lidate.appendChild(spandate)
                 
                 document.querySelector('.one').appendChild(liid)
                 document.querySelector('.two').appendChild(liname)
+                document.querySelector('.four').appendChild(libranch)
                 document.querySelector('.three').appendChild(lidate)
             }
             const names = document.querySelectorAll('[data-active]')

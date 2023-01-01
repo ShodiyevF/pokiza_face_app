@@ -60,9 +60,24 @@ const workersGetModel = async ({action}) => {
     try {
         let all
         if (action == 1) {
-            all = await uniqRow('select * from workers where worker_id != 1000000 order by worker_id asc;')
+            const query = `
+            select
+            *
+            from workers as w
+            left join branch as b on b.branch_id = w.branch_id
+            where worker_id != 1000000
+            order by worker_id asc;
+            `
+            all = await uniqRow(query)
         } else {
-            all = await uniqRow('select * from workers order by worker_id asc;')
+            const query = `
+            select
+            *
+            from workers as w
+            inner join branch as b on b.branch_id = w.branch_id
+            order by worker_id asc;
+            `
+            all = await uniqRow(query)
         }
         return all.rows
     } catch (error) {
@@ -200,6 +215,45 @@ const workerPostTimeModel = async ( {id} ) => {
     }
 }
 
+const workerSetBranchModel = async ( {worker_id, branch_id} ) => {
+    try {
+        const checkBranch = await uniqRow('select * from branch where branch_id = $1', branch_id)
+        const checkWorker = await uniqRow('select * from workers where worker_id = $1', worker_id)
+        if (!(checkBranch.rows.length)) {
+            return {
+                status: 404,
+                message: 'branch not found !'
+            }
+        } else if (!(checkWorker.rows.length)) {
+            return {
+                status: 404,
+                message: 'worker not found !'
+            }
+        } else {
+            await uniqRow('update workers set branch_id = $1 where worker_id = $2', branch_id, worker_id)
+            return {
+                status: 200,
+                message: 'worker updated'
+            }
+        }
+    } catch (error) {
+        console.log(error.message, 'workerSetBranchModel')
+    }
+}
+
+const workerGetBranchModel = async ( {worker_id, branch_id} ) => {
+    try {
+        const checkBranch = await uniqRow('select * from branch')
+        return {
+            status: 200,
+            message: 'branches !',
+            data: await checkBranch.rows
+        }
+    } catch (error) {
+        console.log(error.message, 'workerGetBranchModel')
+    }
+}
+
 module.exports = {
     workerPostModel,
     workerGetTimesModel,
@@ -208,5 +262,7 @@ module.exports = {
     workerPostTimeModel,
     workerPutFishModel,
     workerPutImageModel,
-    workerPostImageModel
+    workerPostImageModel,
+    workerSetBranchModel,
+    workerGetBranchModel
 }
