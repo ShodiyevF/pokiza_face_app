@@ -12,6 +12,29 @@ const workerPostModel = async ({fish}) => {
     }
 }
 
+const workerPostImageModel = async ({file}) => {
+    try {
+        const last = await uniqRow('select * from workers order by worker_id desc limit 2')
+        const find = (last.rows.length ? last.rows[1].worker_id+1 : 1) + "." + 'jpg'
+        const filepath = path.join(__dirname, '../', '../', '../', '../', 'face_images/', find)
+        file.mv(filepath, (err) => {
+            if (err) {
+                return {
+                    status: 400,
+                    message: 'error on filemove !!!'
+                }
+            } else {
+                return {
+                    status: 200,
+                    message: 'worker img updated'
+                }
+            }
+        })
+    } catch (error) {
+        console.log(error.message, 'workerPostImageModel')
+    }
+}
+
 const workerGetTimesModel = async () => {
     try {
         const query = `
@@ -184,5 +207,6 @@ module.exports = {
     workersFilterModel,
     workerPostTimeModel,
     workerPutFishModel,
-    workerPutImageModel
+    workerPutImageModel,
+    workerPostImageModel
 }

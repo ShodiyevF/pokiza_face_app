@@ -1,8 +1,9 @@
-const { workerPostCtrl, workersGetCtrl, workersFilterCtrl, workerGetImgCtrl, workerPostTimeCtrl, workersGetTimesCtrl, workerPutFishCtrl, workerPutImageCtrl } = require('./ctrl')
+const { workerPostCtrl, workersGetCtrl, workersFilterCtrl, workerGetImgCtrl, workerPostTimeCtrl, workersGetTimesCtrl, workerPutFishCtrl, workerPutImageCtrl, workerPostImageCtrl } = require('./ctrl')
 
 const express = require('express').Router()
 
 express.post('/worker/post', (req, res) => workerPostCtrl(req, res))
+express.post('/worker/post/image', (req, res) => workerPostImageCtrl(req, res))
 express.get('/worker/time/get', (req, res) => workersGetTimesCtrl(req, res))
 express.get('/workerall/:action', (req, res) => workersGetCtrl(req, res))
 express.put('/workerput', (req, res) => workerPutFishCtrl(req, res))

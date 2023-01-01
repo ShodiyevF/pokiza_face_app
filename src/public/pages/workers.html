@@ -185,115 +185,19 @@
         function allcheck (e){
             buttona.onclick = (a) => {
                 for (const i of e) {
-                    if(aa) {
+                    i.dataset.active = 1
+                }
+                for (const i of e) {
+                    if (i.dataset.active == 1) {
                         i.dataset.active = 0
-                        i.classList.remove('bg')
-                        aa = false
+                    } else {
+                        i.dataset.active = 1
                     }
                     i.classList[0] ? i.classList.remove('bg') : i.classList.add('bg')
-                    if (i.dataset.active == 0) {
-                        i.dataset.active = 1
-                    } else {
-                        i.dataset.active = 0
-                    }
+                    
                 }
             }
         }
-        
-        // btn.onclick = async (e) => {
-        //     if(input1.value && input2.value){
-        //         const res = await fetch('/workerallfilter', {
-        //             method: "POST",
-        //             headers: {
-        //                 'Content-type': 'application/json'
-        //             },
-        //             body: JSON.stringify({
-        //                 from: input1.value,
-        //                 to: input2.value
-        //             })
-        //         })
-                
-        //         const data = await res.json()
-
-        //         console.log(data)
-                
-        //         if(data.all.length){
-        //             document.querySelector('.one').innerHTML = ''
-        //             document.querySelector('.two').innerHTML = ''
-        //             document.querySelector('.three').innerHTML = ''
-        //             for (const i of data.all) {
-        //                 const liid = document.createElement('li')
-        //                 const liname = document.createElement('li')
-        //                 const lidate = document.createElement('li')
-                        
-        //                 const spanid = document.createElement('span')
-        //                 spanid.id = 'myBtn'
-        //                 spanid.dataset.id = i.worker_id
-        //                 const spanname = document.createElement('span')
-        //                 spanname.dataset.id = i.worker_id
-        //                 spanname.dataset.active = 0
-        //                 const spandate = document.createElement('span')
-                        
-        //                 spanid.textContent = i.worker_id
-        //                 spanname.textContent = i.worker_fish
-        //                 spandate.textContent = i.worker_getdate.split('T')[0]
-                        
-        //                 liid.appendChild(spanid)
-        //                 liname.appendChild(spanname)
-        //                 lidate.appendChild(spandate)
-                        
-        //                 document.querySelector('.one').appendChild(liid)
-        //                 document.querySelector('.two').appendChild(liname)
-        //                 document.querySelector('.three').appendChild(lidate)
-        //             }
-        //             const names = document.querySelectorAll('[data-active]')
-                    
-        //             allcheck(names)
-        //             for (const i of names) {
-        //                 namesa(i)
-        //             }
-        //         }
-        //     } else {
-        //         document.querySelector('.one').innerHTML = ''
-        //         document.querySelector('.two').innerHTML = ''
-        //         document.querySelector('.three').innerHTML = '';
-        //         (async () => {
-        //             const res = await fetch('/workerall')
-        //             const data = await res.json()
-        //             for (const i of data.all) {
-        //                 const liid = document.createElement('li')
-        //                 const liname = document.createElement('li')
-        //                 const lidate = document.createElement('li')
-                        
-        //                 const spanid = document.createElement('span')
-        //                 spanid.id = 'myBtn'
-        //                 spanid.dataset.id = i.worker_id
-        //                 const spanname = document.createElement('span')
-        //                 spanname.dataset.id = i.worker_id
-        //                 spanname.dataset.active = 0
-        //                 const spandate = document.createElement('span')
-                        
-        //                 spanid.textContent = i.worker_id
-        //                 spanname.textContent = i.worker_fish
-        //                 spandate.textContent = i.worker_getdate.split('T')[0]
-                        
-        //                 liid.appendChild(spanid)
-        //                 liname.appendChild(spanname)
-        //                 lidate.appendChild(spandate)
-                        
-        //                 document.querySelector('.one').appendChild(liid)
-        //                 document.querySelector('.two').appendChild(liname)
-        //                 document.querySelector('.three').appendChild(lidate)
-        //             }
-        //             const names = document.querySelectorAll('[data-active]')
-                    
-        //             allcheck(names)
-        //             for (const i of names) {
-        //                 namesa(i)
-        //             }
-        //         })()
-        //     }
-        // }
         
         (async () => {
             const res = await fetch('/workerall/1')
@@ -354,10 +258,15 @@
                 })
             }
             const results = ids.filter(el => el.active == 1)
+            const test1 = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(input1.value)
+            const test2 = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(input2.value)
+            console.log(!test1 || !test2);
+            console.log(!test2);
+            console.log(!test1);
             if (!(results.length)) {
                 alert('bitta ishchini tanlang !')
-            } else if (!(input1.value) && !(input2.value) ) {
-                alert('sana da hatolik bor !')
+            } else if (!(input1.value) || !(input2.value) || !test1 || !test2) {
+                alert(`sana da hatolik bor !\n\n 1-01-2022 va 31-01-2022`)
             } else {
                 const res = await fetch('/excelexport', {
                     method: 'POST',

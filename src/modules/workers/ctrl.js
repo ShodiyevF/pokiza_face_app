@@ -1,4 +1,4 @@
-const { workerPostModel, workersGetModel, workersFilterModel, workerPostTimeModel, workerGetTimesModel, workerPutFishModel, workerPutImageModel } = require("./model")
+const { workerPostModel, workersGetModel, workersFilterModel, workerPostTimeModel, workerGetTimesModel, workerPutFishModel, workerPutImageModel, workerPostImageModel } = require("./model")
 const path = require('path')
 
 const workerPostCtrl = async (req, res) => {
@@ -17,6 +17,29 @@ const workerPostCtrl = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message, 'workerPostCtrl')
+    }
+}
+
+const workerPostImageCtrl = async (req, res) => {
+    try {
+        const file = req.files.file
+        console.log(file);
+        const check = file.mimetype == 'image/jpeg'
+        console.log(check);
+        if (file && check) {
+            workerPostImageModel(req.files)
+            return res.json({
+                status: 200,
+                message: `QO'SHILDI`
+            })
+        } else {
+            return res.json({
+                status: 400,
+                message: `Jo'natishda hatolik`
+            })
+        }
+    } catch (error) {
+        console.log(error.message, 'workerPostImageCtrl')
     }
 }
 
@@ -149,5 +172,6 @@ module.exports = {
     workersFilterCtrl,
     workerGetImgCtrl,
     workerPostTimeCtrl,
-    workerPutImageCtrl
+    workerPutImageCtrl,
+    workerPostImageCtrl
 }

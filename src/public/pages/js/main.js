@@ -20,14 +20,14 @@ try {
             const objectUrl = _URL.createObjectURL(file);
             img.onload = function () {
                 const filetype = filea.value.split('.')[filea.value.split('.').length - 1]
-                console.log(img.width + ' ENI', img.width + " BOYI");
                 if(img.width > 600 && img.width > 600 ){
                     return alert(`rasmni eni va boyi 600 dan kichik bo'lishi kerak`)
                 } else if (!(text.value)) {
                     text.style.borderColor = 'red'
                 } else if (!(filea.value)) {
                     filea.style.borderColor = 'red'
-                } else if (filetype != 'jpg' && filetype != 'JPEG' && filetype != 'JPG' && filetype != 'jpeg') {
+                } else if (filetype != 'jpg' || filetype != 'JPEG' || filetype != 'JPG' || filetype != 'jpeg') {
+                    alert('Iltimos rasming turini jpg qiling !')
                     filea.style.borderColor = 'red'
                 } else {
                     (async () => {
@@ -45,8 +45,8 @@ try {
                             (async () => {
                                 const filea = document.querySelector('.file')
                                 const formData = new FormData()
-                                formData.append("test", filea.files[0]);
-                                const res = await fetch('/worker/post/img',{
+                                formData.append("file", filea.files[0]);
+                                const res = await fetch('/worker/post/image',{
                                     method: 'POST',
                                     body: formData
                                 })

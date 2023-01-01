@@ -157,7 +157,7 @@ const excelExportModel = async ( {from, to, id} ) => {
                     dateArray.push(new Date(currentDate));
                     currentDate.setUTCDate(currentDate.getUTCDate() + steps);
                 }
-
+                
                 const result = []
                 for (const i of dateArray) {
                     result.push(i.toISOString().split("T")[0])
@@ -170,7 +170,7 @@ const excelExportModel = async ( {from, to, id} ) => {
             
             let counter = 0
             for (const i of dates) {
-
+                
                 const a = getMonth.find(el => el.time_date == i)
                 if(!a){
                     worker[`income${counter}`] = '';
