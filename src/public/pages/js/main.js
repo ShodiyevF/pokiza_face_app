@@ -20,12 +20,6 @@ try {
             const objectUrl = _URL.createObjectURL(file);
             img.onload = function () {
                 const filetype = filea.value.split('.')[filea.value.split('.').length - 1]
-                console.log(filetype);
-                console.log(filetype == 'JPG')
-                console.log(
-                filetype != 'jpg' && filetype != 'JPEG' && filetype != 'JPG' && filetype != 'jpeg'
-                
-                )
                 if(img.width > 600 && img.width > 600 ){
                     return alert(`rasmni eni va boyi 600 dan kichik bo'lishi kerak`)
                 } else if (!(text.value)) {
@@ -58,7 +52,6 @@ try {
                                 })
                                 const data = await res.json()
                                 filea.value = ''
-                                console.log(data)
                             })()
                             setTimeout(() => {
                                 window.location = '/'

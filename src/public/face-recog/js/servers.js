@@ -62,7 +62,6 @@ click_button.addEventListener('click', async function() {
 		});
 		const data = await res.json()
 		let data2
-		console.log(data);
 		
 		results.push(data.data.length ? data.data[0]._label : 'none')
 		

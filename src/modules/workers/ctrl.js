@@ -23,9 +23,7 @@ const workerPostCtrl = async (req, res) => {
 const workerPostImageCtrl = async (req, res) => {
     try {
         const file = req.files.file
-        console.log(file);
         const check = file.mimetype == 'image/jpeg'
-        console.log(check);
         if (file && check) {
             workerPostImageModel(req.files)
             return res.json({

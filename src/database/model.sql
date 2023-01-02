@@ -19,6 +19,8 @@ create table settime(
     worker_id int not null references workers(worker_id)
 );
 
+insert into settime(time_get, time_check, time_date, worker_id) values ('8:15', 200, '2023-01-02T8:15:00.000+05:00', 63);
+
 drop table if exists branch cascade;
 create table branch(
     branch_id serial primary key,

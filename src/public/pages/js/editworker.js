@@ -69,13 +69,7 @@ send_btn.onclick = async (e) => {
                 })
             })
             const data = await res.json()
-            console.log(data);
         }
-        
-        console.log(branch.value == lastValue);
-        console.log(branch.value);
-        console.log(lastValue);
-        console.log(branch.value == lastValue &&  filea.files.length == 0 && !(fish.value));
         if (branch.value == lastValue && filea.files.length == 0 && !(fish.value) ) {
             alert('Nimani tahrirlayotganingizni yozing !')
             fish.style.borderColor = 'red'

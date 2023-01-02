@@ -15,13 +15,13 @@ let httpServer = http.createServer(app)
 
 process.env.NODE_ENV = 'production';
 console.log(process.env.NODE_ENV)
-// if (process.env.NODE_ENV === 'production') {
-//     httpServer = https.createServer({
-//         cert: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/cert.pem', 'UTF-8'),
-//         key: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/privkey.pem', 'UTF-8'),
-//         ca: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/fullchain.pem', 'UTF-8')
-//     }, app)
-// }
+if (process.env.NODE_ENV === 'production') {
+    httpServer = https.createServer({
+        cert: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/cert.pem', 'UTF-8'),
+        key: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/privkey.pem', 'UTF-8'),
+        ca: fs.readFileSync('/etc/letsencrypt/live/abubakr.uz/fullchain.pem', 'UTF-8')
+    }, app)
+}
 
 // async function loadLabeledImages(imga) {
 //     const labels = fs.readdirSync(path.join(__dirname, '../','../','face_images'))

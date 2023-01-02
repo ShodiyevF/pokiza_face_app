@@ -41,15 +41,18 @@ async function loadLabeledImages() {
         const descriptions = []
         const asd = await image(path.join(__dirname, '../','../','../','../','face_images/', label.worker_id.toString()+'.jpg'))
         const detections = await faceapi.detectSingleFace(asd).withFaceLandmarks().withFaceDescriptor()
-        descriptions.push(detections.descriptor)
-        return new faceapi.LabeledFaceDescriptors((label.worker_id).toString(), descriptions)
+        if (typeof detections !== 'undefined') {
+            
+            descriptions.push(detections.descriptor)
+            return new faceapi.LabeledFaceDescriptors((label.worker_id).toString(), descriptions)
+        }
     }))
 }
 
 const arr = []
 setTimeout(async () => {
     const res = await loadLabeledImages()
-    const descriptors = await uniqRow('select * from descriptor')
+    // const descriptors = await uniqRow('select * from descriptor')
     for (const i of res) {
         // const obja = JSON.parse(i.descriptor_main)
         // const toarr = new Float32Array(obja.descriptors[0])
@@ -57,7 +60,7 @@ setTimeout(async () => {
         
         // // console.log(eval(i.descriptor_main.descriptors));
         // // console.log(obj);
-        // const obj = {
+        // const obj = {~
         //     _label: obja.label,
         //     _descriptors: [toarr]
         // }
@@ -67,7 +70,6 @@ setTimeout(async () => {
         // arr.push()
         arr.push(i)
     }
-    console.log(arr)
 }, 5000);
 
 
@@ -121,7 +123,6 @@ const excelExportModel = async ( {from, to, id} ) => {
         var sheet = workbook.addWorksheet('LIST 1');
         const sheetarray = []
         
-        console.log(days(from, to));
         for (let i = 0; i <= days(from, to); i++) {
             sheetarray.push({
                 header: `Kelish`,
@@ -157,12 +158,8 @@ const excelExportModel = async ( {from, to, id} ) => {
             const fro = `${from.split('-')[2]}-${(from.split('-')[1]).length == 1 ? '0'+from.split('-')[1] : from.split('-')[1]}-${(from.split('-')[0]).length == 1 ? '0'+from.split('-')[0] : from.split('-')[0]}`
             const too = `${to.split('-')[2]}-${(to.split('-')[1]).length == 1 ? '0'+to.split('-')[1] : to.split('-')[1]}-${(to.split('-')[0]).length == 1 ? '0'+to.split('-')[0] : to.split('-')[0]}`
             const workertimes = await uniqRow(query, i.worker_id)
-            console.log(fro);
-            console.log(too);
             const getMontha = workertimes.rows.filter(el => el.time_date)
-            console.log(getMontha);
             const getMonth = workertimes.rows.filter(el => el.time_date >= fro && el.time_date <= too)
-            console.log(getMonth);
             const worker = {
                 id: i.worker_id,
                 fio: i.worker_fish,
